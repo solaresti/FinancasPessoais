@@ -1,0 +1,322 @@
+{
+	"info": {
+		"_postman_id": "ee079a3a-c9fc-4582-8af9-7e645d4356fd",
+		"name": "Financas Pessoais",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12831030"
+	},
+	"item": [
+		{
+			"name": "Investimento",
+			"item": [
+				{
+					"name": "Criar investimento",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"IdUsuario\": 1,\r\n  \"Nome\": \"Investimento XYZ\",\r\n  \"Vencimento\": \"2024-04-10T12:00:00\",\r\n  \"DataInclusao\": \"2024-03-12T08:30:00\",\r\n  \"DataAlteracao\": \"2024-03-12T08:30:00\",\r\n  \"Versao\": 1,\r\n  \"VoExcluido\": false,\r\n  \"Categoria\": 2,\r\n  \"Risco\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/Investimento/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Investimento",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar investimento",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"IdUsuario\": \"2a02a62b-6f39-4a80-b32e-9a8a5a3e5c88\",\r\n  \"Nome\": \"Tesouro direto Pedro\",\r\n  \"Vencimento\": \"2024-04-10T12:00:00\",\r\n  \"Categoria\": 2,\r\n  \"Risco\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/Investimento/v1/f67c29c6-5395-4111-8f60-854b5c6e980e",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Investimento",
+								"v1",
+								"f67c29c6-5395-4111-8f60-854b5c6e980e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter investimento",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Investimento/v1/f67c29c6-5395-4111-8f60-854b5c6e980e",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Investimento",
+								"v1",
+								"f67c29c6-5395-4111-8f60-854b5c6e980e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir investimento",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Investimento/v1/00EEFFAD-AEC7-43C3-9197-D49CC03B9282",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Investimento",
+								"v1",
+								"00EEFFAD-AEC7-43C3-9197-D49CC03B9282"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter lista de investimentos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Investimento/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Investimento",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuario",
+			"item": [
+				{
+					"name": "Criar usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"Celular\": \"19997815666\",\r\n      \"Senha\": \"senha123\",\r\n      \"PrimeiroNome\": \"Pedro3\",\r\n      \"IdUsuarioPai\": 0,\r\n      \"Status\": 1,\r\n      \"ConvitesAtivos\": 0,\r\n      \"CodigoAlteracaoSenha\": null,\r\n      \"TipoConta\": 1\r\n    }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/Usuario/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Usuario",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar usuário",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"Celular\": \"71899565655\",\r\n      \"Senha\": \"senha123a\",\r\n      \"PrimeiroNome\": \"Pedro 3 alterado\"\r\n    }\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/Usuario/v1/9",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Usuario",
+								"v1",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Usuário",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Usuario/v1/10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Usuario",
+								"v1",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir usuário",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Investimento/v1/00EEFFAD-AEC7-43C3-9197-D49CC03B9282",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Investimento",
+								"v1",
+								"00EEFFAD-AEC7-43C3-9197-D49CC03B9282"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter lista de usuários",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Usuario/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Usuario",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
