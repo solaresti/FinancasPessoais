@@ -172,13 +172,13 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "ros+0XOvAvXYpT0JUERgtwD2FaaGjZK8PgaDalM6rqU=",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n      \"Celular\": \"19997815666\",\r\n      \"Senha\": \"senha123\",\r\n      \"PrimeiroNome\": \"Pedro3\",\r\n      \"IdUsuarioPai\": 0,\r\n      \"Status\": 1,\r\n      \"ConvitesAtivos\": 0,\r\n      \"CodigoAlteracaoSenha\": null,\r\n      \"TipoConta\": 1\r\n    }\r\n",
+							"raw": "{\r\n      \"Celular\": \"71997815667\",\r\n      \"Login\":\"gordo\",\r\n      \"Senha\": \"1234567\",\r\n      \"PrimeiroNome\": \"Pedro\",\r\n      \"IdUsuarioPai\": 0,\r\n      \"Status\": 1,\r\n      \"ConvitesAtivos\": 0,\r\n      \"CodigoAlteracaoSenha\": null,\r\n      \"TipoConta\": 1\r\n    }\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -243,12 +243,12 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "1|1|638461052179101879",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://localhost:7076/Usuario/v1/10",
+							"raw": "https://localhost:7076/Usuario/v1/2",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -257,7 +257,39 @@
 							"path": [
 								"Usuario",
 								"v1",
-								"10"
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "login",
+								"value": "rsinfo",
+								"type": "text"
+							},
+							{
+								"key": "senha",
+								"value": "senha123",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Usuario/v1/ObterToken",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Usuario",
+								"v1",
+								"ObterToken"
 							]
 						}
 					},
@@ -297,7 +329,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "1|1|638461052179101879",
 								"type": "text"
 							}
 						],
