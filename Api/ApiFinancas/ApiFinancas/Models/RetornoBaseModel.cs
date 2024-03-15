@@ -1,4 +1,6 @@
-﻿namespace ApiFinancas.Models
+﻿using ApiFinancas.Enums;
+
+namespace ApiFinancas.Models
 {
     /// <summary>
     /// Classe de retorno padrão da API
@@ -50,12 +52,6 @@
         public List<UsuarioModel> ListaEntidades { get; set; }
 
     }
-
-    public enum CodigosRetornoEnum
-    {
-        Sucesso=1,
-        Excecao=-1,
-        NaoLocalizado=-2
-    }
+  
 
 }

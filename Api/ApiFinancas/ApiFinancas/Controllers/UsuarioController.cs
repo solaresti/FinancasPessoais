@@ -1,4 +1,6 @@
 using ApiFinancas.Models;
+using ApiFinancas.Services;
+using ApiFinancas.Enums;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -37,6 +39,24 @@ namespace ApiFinancas.Controllers
 
             try
             {
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
+
+                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = "Método não permitido para este usuário";
+                    return StatusCode(403, retornoModel);
+                }
+
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     usuarioModel.DataInclusao = DateTime.Now;
@@ -44,8 +64,8 @@ namespace ApiFinancas.Controllers
                     usuarioModel.Versao = 1;
                     usuarioModel.VoExcluido = false;
 
-                    string insertQuery = " INSERT INTO Controle.Usuarios (DataInclusao, DataAlteracao, Versao, VoExcluido, Celular, Senha, PrimeiroNome, IdUsuarioPai, Status, ConvitesAtivos, CodigoAlteracaoSenha, TipoConta) " +
-                                         " VALUES  (@DataInclusao, @DataAlteracao, @Versao, @VoExcluido, @Celular, @Senha, @PrimeiroNome, @IdUsuarioPai, @Status, @ConvitesAtivos, @CodigoAlteracaoSenha, @TipoConta); " +
+                    string insertQuery = " INSERT INTO Controle.Usuarios (DataInclusao, DataAlteracao, Versao, VoExcluido, Login, Celular, Senha, PrimeiroNome, IdUsuarioPai, Status, ConvitesAtivos, CodigoAlteracaoSenha, TipoConta) " +
+                                         " VALUES  (@DataInclusao, @DataAlteracao, @Versao, @VoExcluido, @Login, @Celular, @Senha, @PrimeiroNome, @IdUsuarioPai, @Status, @ConvitesAtivos, @CodigoAlteracaoSenha, @TipoConta); " +
                                          " SELECT CAST(SCOPE_IDENTITY() as int);";
 
 
@@ -72,6 +92,24 @@ namespace ApiFinancas.Controllers
             RetornoBaseModel retornoModel = new RetornoBaseModel();
             try
             {
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
+
+                if (id != idUsuario && tipoUsuario != TipoContaEnum.UsuarioAdministrador)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = "Método não permitido para este usuário";
+                    return StatusCode(403, retornoModel);
+                }
+
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     usuarioModel.Id = id;
@@ -107,13 +145,32 @@ namespace ApiFinancas.Controllers
             RetornoUsuarioModel retornoModel = new RetornoUsuarioModel();
             try
             {
+
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
+
+                if (id != idUsuario && tipoUsuario!= TipoContaEnum.UsuarioAdministrador)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = "Método não permitido para este usuário";
+                    return StatusCode(403, retornoModel);
+                }
+
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    var investimento = new { Id = id };
+                    var usuarioModel = new { Id = id, IdToken = idUsuario };
                     string insertQuery = " Select * FROM [Controle].[Usuarios] " +
                                          " WHERE Id = @Id AND VoExcluido=0";
 
-                    var retornoBd = contexto.Query<UsuarioModel>(insertQuery, investimento).FirstOrDefault();
+                    var retornoBd = contexto.Query<UsuarioModel>(insertQuery, usuarioModel).FirstOrDefault();
 
                     if (retornoBd == null)
                     {
@@ -141,6 +198,46 @@ namespace ApiFinancas.Controllers
         }
 
         [HttpGet]
+        [Route("v1/ObterToken")]
+        public ActionResult ObterToken([FromHeader] string login, [FromHeader] string senha)
+        {
+            RetornoUsuarioModel retornoModel = new RetornoUsuarioModel();
+            try
+            {
+                using (var contexto = new SqlConnection(conexaoBanco))
+                {
+                    string insertQuery = " Select Id, TipoConta FROM [Controle].[Usuarios] " +
+                                         " WHERE VoExcluido=0 AND Login = @Morango AND Senha = @Banana";
+
+                    var modeloLogin = new { Morango = login, Banana = senha };
+                    var retornoBd = contexto.Query<UsuarioModel>(insertQuery, modeloLogin).FirstOrDefault();
+
+                    if (retornoBd == null)
+                    {
+                        retornoModel.Codigo = CodigosRetornoEnum.NaoLocalizado;
+                        retornoModel.Mensagem = "Usuário não localizado ou senha inválida.";
+                        return StatusCode(400, retornoModel);
+                    }
+
+                    string tokenAberto = $"{retornoBd.Id}|{(int)retornoBd.TipoConta}|{DateTime.Now.AddHours(2).Ticks}";
+                    string tokenFechado = CriptografiaService.EncryptStringToken(tokenAberto);
+
+                    retornoModel.Mensagem = tokenFechado;
+                    retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
+                    return StatusCode(200, retornoModel);
+                };
+            }
+            catch (Exception ex)
+            {
+
+                retornoModel.Mensagem = $"Erro no login do usuário do usuário: {ex.Message}";
+                retornoModel.Codigo = CodigosRetornoEnum.Excecao;
+                return StatusCode(500, retornoModel);
+            }
+
+        }
+
+        [HttpGet]
         [Route("v1")]
         public ActionResult ObterUsuarios([FromHeader] string token)
         {
@@ -148,6 +245,25 @@ namespace ApiFinancas.Controllers
             RetornoListaUsuariosModel retornoModel = new RetornoListaUsuariosModel();
             try
             {
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
+
+                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = "Método não permitido para este usuário.";
+                    return StatusCode(403, retornoModel);
+                }
+
+
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     string selectQuery = " Select * FROM [Controle].[Usuarios] WHERE VoExcluido=0 ORDER BY PrimeiroNome";
@@ -185,6 +301,24 @@ namespace ApiFinancas.Controllers
             RetornoBaseModel retornoModel = new RetornoBaseModel();
             try
             {
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
+
+                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = "Método não permitido para este usuário.";
+                    return StatusCode(403, retornoModel);
+                }
+
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     var investimento = new { Id = id };

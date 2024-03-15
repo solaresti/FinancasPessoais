@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using ApiFinancas.Enums;
+using System.Text.Json.Serialization;
 
 namespace ApiFinancas.Models
 
@@ -12,6 +13,11 @@ namespace ApiFinancas.Models
         /// Identificador único do usuário.
         /// </summary>
         public int Id { get; set; }
+
+        /// <summary>
+        /// Login do usuário
+        /// </summary>
+        public string Login { get; set; }
 
         /// <summary>
         /// Data de inclusão do usuário no sistema.
@@ -73,7 +79,9 @@ namespace ApiFinancas.Models
         /// <summary>
         /// Tipo de conta do usuário.
         /// </summary>
-        public int TipoConta { get; set; }
+        public TipoContaEnum TipoConta { get; set; }
     }
+
+   
 }
 
