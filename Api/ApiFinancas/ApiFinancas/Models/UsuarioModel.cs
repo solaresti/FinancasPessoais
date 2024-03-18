@@ -7,39 +7,12 @@ namespace ApiFinancas.Models
     /// <summary>
     /// Representa a entidade de Usuário.
     /// </summary>
-    public class UsuarioModel
+    public class UsuarioModel : EntidadeBaseModel
     {
-        /// <summary>
-        /// Identificador único do usuário.
-        /// </summary>
-        public int Id { get; set; }
-
         /// <summary>
         /// Login do usuário
         /// </summary>
         public string Login { get; set; }
-
-        /// <summary>
-        /// Data de inclusão do usuário no sistema.
-        /// </summary>
-        public DateTime DataInclusao { get; set; }
-
-        /// <summary>
-        /// Data da última alteração nos dados do usuário.
-        /// </summary>
-        public DateTime DataAlteracao { get; set; }
-
-        /// <summary>
-        /// Versão do usuário.
-        /// </summary>
-        public int Versao { get; set; }
-
-        /// <summary>
-        /// Indica se o usuário foi excluído (true) ou não (false).
-        /// </summary>
-
-        [JsonIgnore]
-        public bool VoExcluido { get; set; }
 
         /// <summary>
         /// Número de celular do usuário.
@@ -82,6 +55,6 @@ namespace ApiFinancas.Models
         public TipoContaEnum TipoConta { get; set; }
     }
 
-   
+
 }
 

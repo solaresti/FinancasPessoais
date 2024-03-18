@@ -142,7 +142,7 @@ namespace ApiFinancas.Controllers
         [Route("v1/{id}")]
         public ActionResult ObterUsuario([FromHeader] string token, [FromRoute] int id)
         {
-            RetornoUsuarioModel retornoModel = new RetornoUsuarioModel();
+            RetornoEntidadeModel<UsuarioModel> retornoModel = new RetornoEntidadeModel<UsuarioModel>();
             try
             {
 
@@ -201,7 +201,7 @@ namespace ApiFinancas.Controllers
         [Route("v1/ObterToken")]
         public ActionResult ObterToken([FromHeader] string login, [FromHeader] string senha)
         {
-            RetornoUsuarioModel retornoModel = new RetornoUsuarioModel();
+            RetornoBaseModel retornoModel = new RetornoBaseModel();
             try
             {
                 using (var contexto = new SqlConnection(conexaoBanco))
@@ -242,7 +242,7 @@ namespace ApiFinancas.Controllers
         public ActionResult ObterUsuarios([FromHeader] string token)
         {
 
-            RetornoListaUsuariosModel retornoModel = new RetornoListaUsuariosModel();
+            RetornoListaEntidadesModel<UsuarioModel> retornoModel = new RetornoListaEntidadesModel<UsuarioModel>();
             try
             {
                 string mensagemErro = "";

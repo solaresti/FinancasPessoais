@@ -1,4 +1,6 @@
+using ApiFinancas.Enums;
 using ApiFinancas.Models;
+using ApiFinancas.Services;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -34,18 +36,49 @@ namespace ApiFinancas.Controllers
         public ActionResult CriarInvestimento([FromHeader] string token, [FromBody] InvestimentoModel investimento)
         {
 
-            using (var contexto = new SqlConnection(conexaoBanco))
+            RetornoEntidadeModel<InvestimentoModel> retornoModel = new RetornoEntidadeModel<InvestimentoModel>();
+            try
             {
-                string insertQuery = " INSERT INTO [Main].[Investimentos]([IdUsuario],[Nome],[Vencimento],[DataInclusao],[DataAlteracao],[Versao],[VoExcluido],[Categoria],[Risco])" +
-                                     " VALUES (@IdUsuario,@Nome,@Vencimento,GETDATE(),GETDATE(),1,0,@Categoria,@Risco);" +
-                                     " SELECT CAST(SCOPE_IDENTITY() as int);";
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
+
+                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
+                {
+                    investimento.IdUsuario = idUsuario;
+                }
+                
+
+                using (var contexto = new SqlConnection(conexaoBanco))
+                {
+                    string insertQuery = " INSERT INTO [Main].[Investimentos]([IdUsuario],[Nome],[Vencimento],[DataInclusao],[DataAlteracao],[Versao],[VoExcluido],[Categoria],[Risco])" +
+                                         " VALUES (@IdUsuario,@Nome,@Vencimento,GETDATE(),GETDATE(),1,0,@Categoria,@Risco);" +
+                                         " SELECT CAST(SCOPE_IDENTITY() as int);";
 
 
-                var retorno = contexto.QuerySingle<int>(insertQuery,investimento);
-                investimento.Id = retorno;
-            };
+                    var retornoBd = contexto.QuerySingle<int>(insertQuery, investimento);
+                    investimento.Id = retornoBd;
+                    retornoModel.Mensagem = $"Investimento incluído com sucesso.";
+                    retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
+                    retornoModel.Entidade = investimento;
+                };
 
-            return Ok(investimento);
+                return Ok(retornoModel);
+            }
+            catch (Exception ex)
+            {
+                retornoModel.Mensagem = $"Erro na inclusão do investimento: {ex.Message}.";
+                retornoModel.Codigo = CodigosRetornoEnum.Excecao;
+                return StatusCode(500, retornoModel);
+            }
+
         }
 
         [HttpPut]
@@ -53,46 +86,108 @@ namespace ApiFinancas.Controllers
         public ActionResult AlterarInvestimento([FromHeader] string token, [FromBody] InvestimentoModel investimento, [FromRoute] int id)
         {
 
-            using (var contexto = new SqlConnection(conexaoBanco))
+            RetornoBaseModel retornoModel = new RetornoBaseModel();
+            try
             {
-                investimento.Id = id;
-                string insertQuery = "UPDATE [Main].[Investimentos] " +
-                                    " SET [Nome] = @Nome, " +
-                                    " [Vencimento] = @Vencimento, " +
-                                    " [DataAlteracao] = GETDATE()," +
-                                    " [Versao] = Versao+1," +
-                                    " [Categoria] = @Categoria," +
-                                    " [Risco] = @Risco " +
-                                    " WHERE Id = @Id AND VoExcluido=0";
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
 
-                var retorno = contexto.Execute(insertQuery, investimento);
-            };
+                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
+                {
+                    investimento.IdUsuario = idUsuario;
+                }
 
-            return Ok(investimento);
+
+                using (var contexto = new SqlConnection(conexaoBanco))
+                {
+                    investimento.Id = id;
+                    string insertQuery =" UPDATE [Main].[Investimentos] " +
+                                        " SET [Nome] = @Nome, " +
+                                        " [Vencimento] = @Vencimento, " +
+                                        " [DataAlteracao] = GETDATE()," +
+                                        " [Versao] = Versao+1," +
+                                        " [Categoria] = @Categoria," +
+                                        " [Risco] = @Risco " +
+                                        " WHERE Id = @Id AND VoExcluido=0 AND [IdUsuario] = @IdUsuario";
+
+                    var retorno = contexto.Execute(insertQuery, investimento);
+                };
+
+                retornoModel.Mensagem = "Investimento alterado com sucesso.";
+                retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
+                return Ok(retornoModel);
+            }
+            catch (Exception ex)
+            {
+                retornoModel.Mensagem = $"Erro na alteracão do investimento: {ex.Message}.";
+                retornoModel.Codigo = CodigosRetornoEnum.Excecao;
+                return StatusCode(500, retornoModel);
+            }
         }
 
         [HttpGet]
         [Route("v1/{id}")]
-        public ActionResult ObterInvestimento([FromHeader] string token, [FromRoute] Guid id)
+        public ActionResult ObterInvestimento([FromHeader] string token, [FromRoute] int id)
         {
 
-            using (var contexto = new SqlConnection(conexaoBanco))
+            RetornoEntidadeModel<InvestimentoModel> retornoModel = new RetornoEntidadeModel<InvestimentoModel>();
+            try
             {
-                var investimento = new { Id = id };
-                string insertQuery = " Select * FROM [Main].[Investimentos] " +
-                                     " WHERE Id = @Id AND VoExcluido=0";
-
-                var retorno = contexto.Query<InvestimentoModel>(insertQuery, investimento).FirstOrDefault();
-
-                if (retorno==null)
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
                 {
-                    return StatusCode(404);
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
                 }
-                else
+
+                string clausulaExtra = "";
+                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
                 {
-                    return Ok(retorno);
+                    clausulaExtra = " AND IdUsuario = @IdUsuario ";
                 }
-            };
+
+                using (var contexto = new SqlConnection(conexaoBanco))
+                {
+                    var investimento = new { Id = id };
+                    string insertQuery = " Select * FROM [Main].[Investimentos] " +
+                                         $" WHERE Id = @Id AND VoExcluido=0 {clausulaExtra}";
+
+                    var retornoBd = contexto.Query<InvestimentoModel>(insertQuery, investimento).FirstOrDefault();
+
+                    if (retornoBd == null)
+                    {
+                        retornoModel.Codigo = CodigosRetornoEnum.NaoLocalizado;
+                        retornoModel.Mensagem = "Usuário não localizado";
+                        return StatusCode(400, retornoModel);
+                    }
+                    else
+                    {
+                        retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
+                        retornoModel.Mensagem = "Usuário localizado com sucesso";
+                        retornoModel.Entidade = retornoBd;
+                        return Ok(retornoModel);
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                retornoModel.Mensagem = $"Erro na obtenção do investimento: {ex.Message}.";
+                retornoModel.Codigo = CodigosRetornoEnum.Excecao;
+                return StatusCode(500, retornoModel);
+            }
+            
             
         }
 
@@ -101,21 +196,55 @@ namespace ApiFinancas.Controllers
         public ActionResult ObterInvestimentos([FromHeader] string token)
         {
 
-            using (var contexto = new SqlConnection(conexaoBanco))
+            RetornoListaEntidadesModel<InvestimentoModel> retornoModel = new RetornoListaEntidadesModel<InvestimentoModel>();
+
+            try
             {
-                string insertQuery = " Select * FROM [Main].[Investimentos] WHERE VoExcluido=0 ORDER Nome";
-
-                var retorno = contexto.Query<InvestimentoModel>(insertQuery).ToList();
-
-                if (retorno == null)
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
                 {
-                    return StatusCode(404);
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
                 }
-                else
+
+                string clausulaExtra = "";
+                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
                 {
-                    return Ok(retorno);
+                    clausulaExtra = " AND IdUsuario = @IdUsuario ";
                 }
-            };
+
+                using (var contexto = new SqlConnection(conexaoBanco))
+                {
+                    string insertQuery = $" Select * FROM [Main].[Investimentos] WHERE VoExcluido=0 {clausulaExtra} ORDER BY Nome ";
+
+                    var retornoBd = contexto.Query<InvestimentoModel>(insertQuery).ToList();
+
+                    if (retornoBd == null)
+                    {
+                        retornoModel.Mensagem = "Nenhum investimento localizado.";
+                        retornoModel.Codigo = CodigosRetornoEnum.NaoLocalizado;
+                        return StatusCode(400,retornoModel);
+                    }
+                    else
+                    {
+                        retornoModel.Mensagem = "Investimentos localizados com sucesso.";
+                        retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
+                        retornoModel.ListaEntidades = retornoBd;
+                        return Ok(retornoModel);
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                retornoModel.Mensagem = $"Erro na obtenção dos investimentos: {ex.Message}.";
+                retornoModel.Codigo = CodigosRetornoEnum.Excecao;
+                return StatusCode(500, retornoModel);
+            }
+           
 
         }
 
@@ -124,25 +253,55 @@ namespace ApiFinancas.Controllers
         public ActionResult ExcluirInvestimento([FromHeader] string token, [FromRoute] int id)
         {
 
-            using (var contexto = new SqlConnection(conexaoBanco))
+            RetornoBaseModel retornoModel = new RetornoBaseModel();
+            try
             {
-                var investimento = new { Id = id };
-                string insertQuery = " UPDATE [Main].[Investimentos] " +
-                                     " SET VoExcluido=1, DataAlteracao = Getdate(), Versao=Versao+1" +
-                                     " WHERE Id = @Id AND VoExcluido=0";
-
-                var retorno = contexto.Execute(insertQuery, investimento);
-
-                if (retorno == null || retorno==0)
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
                 {
-                    return StatusCode(404);
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
                 }
-                else
-                {
-                    return Ok(retorno);
-                }
-            };
 
+                string clausulaExtra = "";
+                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
+                {
+                    clausulaExtra = " AND IdUsuario = @IdUsuario ";
+                }
+
+                using (var contexto = new SqlConnection(conexaoBanco))
+                {
+                    var investimento = new { Id = id };
+                    string insertQuery = " UPDATE [Main].[Investimentos] " +
+                                         " SET VoExcluido=1, DataAlteracao = Getdate(), Versao=Versao+1" +
+                                         $" WHERE Id = @Id AND VoExcluido=0 {clausulaExtra}";
+
+                    var retorno = contexto.Execute(insertQuery, investimento);
+
+                    if (retorno == null || retorno == 0)
+                    {
+                        retornoModel.Codigo = CodigosRetornoEnum.NaoLocalizado;
+                        retornoModel.Mensagem = "Investimento não localizado";
+                        return StatusCode(400,retornoModel);
+                    }
+                    else
+                    {
+                        retornoModel.Mensagem = "Investimento exlcluído co sucesso.";
+                        retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
+                        return Ok(retornoModel);
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                retornoModel.Mensagem = $"Erro na exclusão do investimento: {ex.Message}.";
+                retornoModel.Codigo = CodigosRetornoEnum.Excecao;
+                return StatusCode(500, retornoModel);
+            }
         }
     }
 

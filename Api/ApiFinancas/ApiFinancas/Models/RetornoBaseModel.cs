@@ -32,24 +32,26 @@ namespace ApiFinancas.Models
 
     }
 
-    public class RetornoUsuarioModel : RetornoBaseModel
+
+        public class RetornoEntidadeModel<T> : RetornoBaseModel where T : EntidadeBaseModel
     {
         /// <summary>
         /// Entidade criada
         /// </summary>
-        public UsuarioModel Entidade { get; set; }
+        public T Entidade { get; set; }
 
     }
 
+
     /// <summary>
-    /// Retorno com a lista de usuários
+    /// Retorno com a lista de entidades
     /// </summary>
-    public class RetornoListaUsuariosModel : RetornoBaseModel
+    public class RetornoListaEntidadesModel<T> : RetornoBaseModel where T: EntidadeBaseModel
     {
         /// <summary>
         /// Entidade criada
         /// </summary>
-        public List<UsuarioModel> ListaEntidades { get; set; }
+        public List<T> ListaEntidades { get; set; }
 
     }
   

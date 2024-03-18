@@ -8,7 +8,7 @@
         Sucesso = 1,
         Excecao = -1,
         NaoLocalizado = -2,
-        NaoAutorizado = 3
+        NaoAutorizado = -3
     }
 
     /// <summary>
