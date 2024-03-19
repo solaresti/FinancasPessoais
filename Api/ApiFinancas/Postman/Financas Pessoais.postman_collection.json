@@ -51,7 +51,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "SNtUrgVltd28zMdS7fISBdZunAfLO4D+eUPjJvJLKDo=",
 								"type": "text"
 							}
 						],
@@ -65,7 +65,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7076/Investimento/v1/f67c29c6-5395-4111-8f60-854b5c6e980e",
+							"raw": "https://localhost:7076/Investimento/v1/1",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -74,7 +74,7 @@
 							"path": [
 								"Investimento",
 								"v1",
-								"f67c29c6-5395-4111-8f60-854b5c6e980e"
+								"1"
 							]
 						}
 					},
