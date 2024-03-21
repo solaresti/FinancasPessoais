@@ -1,13 +1,13 @@
 {
 	"info": {
-		"_postman_id": "46228c40-bf43-4f98-9852-fd33afb90fb1",
+		"_postman_id": "f5ee000a-1d84-4859-8aa4-fb8581912716",
 		"name": "Financas Pessoais",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "33697394"
+		"_exporter_id": "12831030"
 	},
 	"item": [
 		{
-			"name": "Investimento",
+			"name": "Investimentos",
 			"item": [
 				{
 					"name": "Criar investimento",
@@ -16,13 +16,13 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"IdUsuario\": 1,\r\n  \"Nome\": \"Investimento XYZ\",\r\n  \"Vencimento\": \"2024-04-10T12:00:00\",\r\n  \"DataInclusao\": \"2024-03-12T08:30:00\",\r\n  \"DataAlteracao\": \"2024-03-12T08:30:00\",\r\n  \"Versao\": 1,\r\n  \"VoExcluido\": false,\r\n  \"Categoria\": 2,\r\n  \"Risco\": 3\r\n}\r\n",
+							"raw": "{\r\n  \"IdUsuario\": 1,\r\n  \"Nome\": \"Tesouro SELIC 2029\",\r\n  \"Vencimento\": null,\r\n  \"Categoria\": 1,\r\n  \"Risco\": 1\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -114,12 +114,12 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://localhost:7076/Investimento/v1/00EEFFAD-AEC7-43C3-9197-D49CC03B9282",
+							"raw": "https://localhost:7076/Investimento/v1/7",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -128,7 +128,7 @@
 							"path": [
 								"Investimento",
 								"v1",
-								"00EEFFAD-AEC7-43C3-9197-D49CC03B9282"
+								"7"
 							]
 						}
 					},
@@ -141,7 +141,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
@@ -319,6 +319,218 @@
 			]
 		},
 		{
+			"name": "Movimentações em Investimentos",
+			"item": [
+				{
+					"name": "Criar movimentação",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Valor\": 1200,\r\n  \"Data\": \"2024-02-21T08:00:00\",\r\n  \"IdMeta\": 5,\r\n  \"IdInvestimento\": 8,\r\n  \"Descritivo\": \"RE\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/MovimentacaoInvestimento/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"MovimentacaoInvestimento",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar categoria despesa",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "SNtUrgVltd28zMdS7fISBdZunAfLO4D+eUPjJvJLKDo=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"IdUsuario\": \"2a02a62b-6f39-4a80-b32e-9a8a5a3e5c88\",\r\n  \"Nome\": \"Tesouro direto Pedro\",\r\n  \"Vencimento\": \"2024-04-10T12:00:00\",\r\n  \"Categoria\": 2,\r\n  \"Risco\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
+								"v1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter categoria despesa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/f67c29c6-5395-4111-8f60-854b5c6e980e",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
+								"v1",
+								"f67c29c6-5395-4111-8f60-854b5c6e980e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir categoria despesa",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/00EEFFAD-AEC7-43C3-9197-D49CC03B9282",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
+								"v1",
+								"00EEFFAD-AEC7-43C3-9197-D49CC03B9282"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter lista de categorias despesa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter extrato por meta",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/MovimentacaoInvestimento/v1/ExtratoMeta/5",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"MovimentacaoInvestimento",
+								"v1",
+								"ExtratoMeta",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter posição meta",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/MovimentacaoInvestimento/v1/PosicaoMeta/5",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"MovimentacaoInvestimento",
+								"v1",
+								"PosicaoMeta",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Meta",
 			"item": [
 				{
@@ -328,13 +540,13 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "QInmC92YihX9+KFc2n3S4MZp2KpjDldhDAyvRMIzuAU=",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"idUsuario\": 3,\r\n  \"nome\": \"Ajudar Gabriela e Juliana\",\r\n  \"descritivo\": \"string\",\r\n  \"valor\": 500000,\r\n  \"data\": \"2030-03-19T13:02:52.023Z\"\r\n}",
+							"raw": "{\r\n  \"idUsuario\": 1,\r\n  \"nome\": \"Reforma banheiro\",\r\n  \"descritivo\": \"\",\r\n  \"valor\": 20000,\r\n  \"data\": \"2025-01-01\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -426,12 +638,12 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "QInmC92YihX9+KFc2n3S4MZp2KpjDldhDAyvRMIzuAU=",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://localhost:7076/Meta/v1/3",
+							"raw": "https://localhost:7076/Meta/v1/1",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -440,7 +652,7 @@
 							"path": [
 								"Meta",
 								"v1",
-								"3"
+								"1"
 							]
 						}
 					},
@@ -453,7 +665,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "QInmC92YihX9+KFc2n3S4MZp2KpjDldhDAyvRMIzuAU=",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
@@ -641,7 +853,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "rijXPOJ3JmT31mfma+Rg6ziBko8VJhRBS2TT9c3I3SA=",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
@@ -661,6 +873,35 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": "rMMQSh/gdDsi7i2fHoBzPuHkfpHHDaQDfsxYMt9ffOs=",
+			"type": "string"
 		}
 	]
 }

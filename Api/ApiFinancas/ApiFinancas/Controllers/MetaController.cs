@@ -217,16 +217,9 @@ namespace ApiFinancas.Controllers
                     return StatusCode(403, retornoModel);
                 }
 
-                string clausulaAdicional = "";
-                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
-                {
-                    clausulaAdicional = " AND IdUsuario = @IdUsuario";
-                }
-
-
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    string selectQuery = $" Select * FROM [Main].[Metas] WHERE VoExcluido=0 {clausulaAdicional} ORDER BY Nome";
+                    string selectQuery = $" Select * FROM [Main].[Metas] WHERE VoExcluido=0 AND IdUsuario = @IdUsuario ORDER BY Nome";
 
                     var model = new { idUsuario = idUsuario };
                     var retornoBd = contexto.Query<MetaModel>(selectQuery, model).ToList();

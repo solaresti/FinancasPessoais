@@ -1,9 +1,9 @@
 ﻿namespace ApiFinancas.Models
 {
     /// <summary>
-    /// Model de Metas
+    /// Model extrato de uma determinada meta
     /// </summary>
-    public class MovimentaacoesInvestimentosModel : EntidadeBaseModel
+    public class MovimentacaoInvestimentoModel : EntidadeBaseModel
     {
         /// <summary>
         /// Obtém ou define o valor de uma movimentação de investimento.
@@ -18,12 +18,12 @@
         /// <summary>
         /// Obtém e define o Id da Meta relativa à movimentação do investimento.
         /// </summary>
-        public string IdMeta { get; set; }
+        public int IdMeta { get; set; }
 
         /// <summary>
         /// Obtém ou define a descrição da meta.
         /// </summary>
-        public string IdInvestimento { get; set; }
+        public int IdInvestimento { get; set; }
 
         /// <summary>
         /// Obtém ou define a descrição da meta.

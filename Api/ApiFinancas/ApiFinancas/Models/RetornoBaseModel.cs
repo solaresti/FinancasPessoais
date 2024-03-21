@@ -46,7 +46,7 @@ namespace ApiFinancas.Models
     /// <summary>
     /// Retorno com a lista de entidades
     /// </summary>
-    public class RetornoListaEntidadesModel<T> : RetornoBaseModel where T: EntidadeBaseModel
+    public class RetornoListaEntidadesModel<T> : RetornoBaseModel where T: class
     {
         /// <summary>
         /// Entidade criada
