@@ -8,17 +8,17 @@ using Microsoft.Data.SqlClient;
 namespace ApiFinancas.Controllers
 {
     /// <summary>
-    /// Controller de CategoriaDespesa
+    /// Controller de Despesa
     /// </summary>
-    [Route("CategoriaDespesa")]
-    public class CategoriaDespesaController : ControllerBase
+    [Route("Despesa")]
+    public class DespesaController : ControllerBase
     {
 
         string conexaoBanco = System.Environment.GetEnvironmentVariable("BdFutturo");
 
-        ILogger<CategoriaDespesaController> log;
+        ILogger<DespesaController> log;
 
-        public CategoriaDespesaController(ILogger<CategoriaDespesaController> logger)
+        public DespesaController(ILogger<DespesaController> logger)
         {
             this.log = logger;
         }
@@ -33,9 +33,9 @@ namespace ApiFinancas.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("v1")]
-        public ActionResult CriarCategoriaDespesa([FromHeader] string token, [FromBody] CategoriaDespesaModel categoriaDespesa)
+        public ActionResult CriarDespesa([FromHeader] string token, [FromBody] DespesaModel despesa)
         {
-            RetornoEntidadeModel<CategoriaDespesaModel> retornoModel = new RetornoEntidadeModel<CategoriaDespesaModel>();
+            RetornoEntidadeModel<DespesaModel> retornoModel = new RetornoEntidadeModel<DespesaModel>();
 
             try
             {
@@ -50,8 +50,8 @@ namespace ApiFinancas.Controllers
                     return StatusCode(403, retornoModel);
                 }
 
-                // pensando em permitir para o administrador também
-                if (categoriaDespesa.IdUsuario != idUsuario)
+
+                if (despesa.IdUsuario != idUsuario && tipoUsuario != TipoContaEnum.UsuarioAdministrador)
                 {
                     retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
                     retornoModel.Mensagem = "Método não permitido para este usuário";
@@ -60,28 +60,28 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    categoriaDespesa.DataInclusao = DateTime.Now;
-                    categoriaDespesa.DataAlteracao = categoriaDespesa.DataInclusao;
-                    categoriaDespesa.Versao = 1;
-                    categoriaDespesa.VoExcluido = false;
+                    despesa.DataInclusao = DateTime.Now;
+                    despesa.DataAlteracao = despesa.DataInclusao;
+                    despesa.Versao = 1;
+                    despesa.VoExcluido = false;
 
-                    string insertQuery = " INSERT INTO Main.CategoriasDespesas (IdUsuario, Nome, TipoDespesa, Descritivo, MetaValorMensal, DataInclusao, DataAlteracao, Versao, VoExcluido) " +
-                                         " VALUES  (@IdUsuario, @Nome, @TipoDespesa, @Descritivo, @MetaValorMensal, GETDATE(), GETDATE(), 1,0); " +
+                    string insertQuery = " INSERT INTO Main.Despesas (IdUsuario, TipoDespesa, IdCategoria, Descritivo, Valor, Data, DataInclusao, DataAlteracao, Versao, VoExcluido) " +
+                                         " VALUES  (@IdUsuario, @TipoDespesa, @IdCategoria, @Descritivo, @Valor, @Data, GETDATE(), GETDATE(), 1,0); " +
                                          " SELECT CAST(SCOPE_IDENTITY() as int);";
 
 
-                    var retornoBd = contexto.QuerySingle<int>(insertQuery, categoriaDespesa);
-                    categoriaDespesa.Id = retornoBd;
+                    var retornoBd = contexto.QuerySingle<int>(insertQuery, despesa);
+                    despesa.Id = retornoBd;
                 };
 
                 retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
-                retornoModel.Mensagem = "Categoria de despesa incluída com sucesso";
-                retornoModel.Entidade = categoriaDespesa;
+                retornoModel.Mensagem = "Despesa incluída com sucesso";
+                retornoModel.Entidade = despesa;
                 return Ok(retornoModel);
             }
             catch (Exception ex)
             {
-                retornoModel.Mensagem = $"Erro na inclusão da categoria de despesa: {ex.Message}";
+                retornoModel.Mensagem = $"Erro na inclusão de despesa: {ex.Message}";
                 retornoModel.Codigo = CodigosRetornoEnum.Excecao;
                 return StatusCode(500, retornoModel);
             }
@@ -89,7 +89,7 @@ namespace ApiFinancas.Controllers
 
         [HttpPut]
         [Route("v1/{id}")]
-        public ActionResult AlterarCategoriaDespesa([FromHeader] string token, [FromBody] CategoriaDespesaModel categoriaDespesa, [FromRoute] int id)
+        public ActionResult AlterarDespesa([FromHeader] string token, [FromBody] DespesaModel despesa, [FromRoute] int id)
         {
             RetornoBaseModel retornoModel = new RetornoBaseModel();
             try
@@ -113,26 +113,27 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    categoriaDespesa.Id = id;
-                    string insertQuery = "UPDATE [Main].[CategoriasDespesas] " +
-                                        " SET [Nome] = @Nome, " +
-                                        " [TipoDespesa] = @TipoDespesa, " +
+                    despesa.Id = id;
+                    string insertQuery = "UPDATE [Main].[Despesas] " +
+                                        " SET [TipoDespesa] = @TipoDespesa, " +
+                                        " [IdCategoria] = @IdCategoria, " +
                                         " [Descritivo] = @Descritivo, " +
-                                        " [MetaValorMensal] = @MetaValorMensal, " +
+                                        " [Valor] = @Valor, " +
+                                        " [Data] = @Data, " +
                                         " [DataAlteracao] = GETDATE()," +
                                         " [Versao] = Versao+1 " +
                                         $" WHERE Id = @Id AND VoExcluido=0  {clausulaAdicional}";
 
-                    var retorno = contexto.Execute(insertQuery, categoriaDespesa);
+                    var retorno = contexto.Execute(insertQuery, despesa);
                 };
 
                 retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
-                retornoModel.Mensagem = "Categoria de despesa atualizada com sucesso";
+                retornoModel.Mensagem = "Despesa atualizada com sucesso";
                 return Ok(retornoModel);
             }
             catch (Exception ex)
             {
-                retornoModel.Mensagem = $"Erro na alteração de categoria de despesa: {ex.Message}";
+                retornoModel.Mensagem = $"Erro na alteração da despesa: {ex.Message}";
                 retornoModel.Codigo = CodigosRetornoEnum.Excecao;
                 return StatusCode(500, retornoModel);
             }
@@ -142,9 +143,9 @@ namespace ApiFinancas.Controllers
 
         [HttpGet]
         [Route("v1/{id}")]
-        public ActionResult ObterCategoriaDespesa([FromHeader] string token, [FromRoute] int id)
+        public ActionResult ObterDespesa([FromHeader] string token, [FromRoute] int id)
         {
-            RetornoEntidadeModel<CategoriaDespesaModel> retornoModel = new RetornoEntidadeModel<CategoriaDespesaModel>();
+            RetornoEntidadeModel<DespesaModel> retornoModel = new RetornoEntidadeModel<DespesaModel>();
             try
             {
 
@@ -168,21 +169,21 @@ namespace ApiFinancas.Controllers
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     var usuarioModel = new { Id = id, IdUsuario = idUsuario };
-                    string insertQuery = " Select * FROM [Main].[CategoriasDespesas] " +
+                    string insertQuery = " Select * FROM [Main].[Despesas] " +
                                          $" WHERE Id = @Id AND VoExcluido=0 {clausulaAdicional}";
 
-                    var retornoBd = contexto.Query<CategoriaDespesaModel>(insertQuery, usuarioModel).FirstOrDefault();
+                    var retornoBd = contexto.Query<DespesaModel>(insertQuery, usuarioModel).FirstOrDefault();
 
                     if (retornoBd == null)
                     {
                         retornoModel.Codigo = CodigosRetornoEnum.NaoLocalizado;
-                        retornoModel.Mensagem = "Categoria de despesa não localizada";
+                        retornoModel.Mensagem = "Despesa não localizada";
                         return StatusCode(400, retornoModel);
                     }
                     else
                     {
                         retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
-                        retornoModel.Mensagem = "Categoria de despesa obtida com sucesso";
+                        retornoModel.Mensagem = "Despesa obtida com sucesso";
                         retornoModel.Entidade = retornoBd;
                         return Ok(retornoModel);
                     }
@@ -191,7 +192,7 @@ namespace ApiFinancas.Controllers
             catch (Exception ex)
             {
 
-                retornoModel.Mensagem = $"Erro na obtenção de categoria de despesa: {ex.Message}";
+                retornoModel.Mensagem = $"Erro na obtenção da despesa: {ex.Message}";
                 retornoModel.Codigo = CodigosRetornoEnum.Excecao;
                 return StatusCode(500, retornoModel);
             }
@@ -201,10 +202,10 @@ namespace ApiFinancas.Controllers
 
         [HttpGet]
         [Route("v1")]
-        public ActionResult ObterCategoriasDespesas([FromHeader] string token)
+        public ActionResult ObterDespesas([FromHeader] string token)
         {
 
-            RetornoListaEntidadesModel<CategoriaDespesaModel> retornoModel = new RetornoListaEntidadesModel<CategoriaDespesaModel>();
+            RetornoListaEntidadesModel<DespesaModel> retornoModel = new RetornoListaEntidadesModel<DespesaModel>();
             try
             {
                 string mensagemErro = "";
@@ -227,10 +228,10 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    string selectQuery = $" Select * FROM [Main].[CategoriasDespesas] WHERE VoExcluido=0 {clausulaAdicional} ORDER BY Nome";
+                    string selectQuery = $" Select * FROM [Main].[Despesas] WHERE VoExcluido=0 {clausulaAdicional} ORDER BY Nome";
 
                     var model = new { idUsuario = idUsuario };
-                    var retornoBd = contexto.Query<CategoriaDespesaModel>(selectQuery, model).ToList();
+                    var retornoBd = contexto.Query<DespesaModel>(selectQuery, model).ToList();
 
                     if (retornoBd == null)
                     {
@@ -241,7 +242,7 @@ namespace ApiFinancas.Controllers
                     else
                     {
                         retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
-                        retornoModel.Mensagem = "Categorias de despesa obtidas com sucesso";
+                        retornoModel.Mensagem = "Despesas obtidas com sucesso";
                         retornoModel.ListaEntidades = retornoBd;
                         return Ok(retornoModel);
                     }
@@ -250,7 +251,7 @@ namespace ApiFinancas.Controllers
             catch (Exception ex)
             {
 
-                retornoModel.Mensagem = $"Erro na obtenção de categorias de despesa: {ex.Message}";
+                retornoModel.Mensagem = $"Erro na obtenção de despesas: {ex.Message}";
                 retornoModel.Codigo = CodigosRetornoEnum.Excecao;
                 return StatusCode(500, retornoModel);
             }
@@ -258,7 +259,7 @@ namespace ApiFinancas.Controllers
 
         [HttpDelete]
         [Route("v1/{id}")]
-        public ActionResult ExcluirCategoriaDespesa([FromHeader] string token, [FromRoute] int id)
+        public ActionResult ExcluirDespesa([FromHeader] string token, [FromRoute] int id)
         {
             RetornoBaseModel retornoModel = new RetornoBaseModel();
             try
@@ -283,7 +284,7 @@ namespace ApiFinancas.Controllers
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     var model = new { Id = id, IdUsuario = idUsuario };
-                    string insertQuery = " UPDATE [Main].[CategoriasDespesas] " +
+                    string insertQuery = " UPDATE [Main].[Despesas] " +
                                          " SET VoExcluido=1, DataAlteracao = Getdate(), Versao=Versao+1" +
                                          $" WHERE Id = @Id AND VoExcluido=0 {clausulaAdicional}";
 
@@ -292,13 +293,13 @@ namespace ApiFinancas.Controllers
                     if (retorno == null || retorno == 0)
                     {
                         retornoModel.Codigo = CodigosRetornoEnum.NaoLocalizado;
-                        retornoModel.Mensagem = "Categoria de despesa não localizado";
+                        retornoModel.Mensagem = "Despesa não localizado";
                         return StatusCode(400, retornoModel);
                     }
                     else
                     {
                         retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
-                        retornoModel.Mensagem = "Categoria de despesa excluída com sucesso";
+                        retornoModel.Mensagem = "Despesa excluída com sucesso";
                         return Ok(retornoModel);
                     }
                 };
@@ -306,7 +307,7 @@ namespace ApiFinancas.Controllers
             catch (Exception ex)
             {
 
-                retornoModel.Mensagem = $"Erro na exclusão da categoria de despesa: {ex.Message}";
+                retornoModel.Mensagem = $"Erro na exclusão da despesa: {ex.Message}";
                 retornoModel.Codigo = CodigosRetornoEnum.Excecao;
                 return StatusCode(500, retornoModel);
             }

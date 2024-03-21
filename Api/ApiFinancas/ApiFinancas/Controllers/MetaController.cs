@@ -33,9 +33,9 @@ namespace ApiFinancas.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("v1")]
-        public ActionResult CriarMetas([FromHeader] string token, [FromBody] MetaModel metaModel)
+        public ActionResult CriarMeta([FromHeader] string token, [FromBody] MetaModel metaModel)
         {
-            RetornoBaseModel retornoModel = new RetornoBaseModel();
+            RetornoEntidadeModel<MetaModel> retornoModel = new RetornoEntidadeModel<MetaModel>();
 
             try
             {
@@ -50,7 +50,7 @@ namespace ApiFinancas.Controllers
                     return StatusCode(403, retornoModel);
                 }
 
-                if (metaModel.IdUsuario != idUsuario)
+                if (metaModel.IdUsuario != idUsuario && tipoUsuario != TipoContaEnum.UsuarioAdministrador)
                 {
                     retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
                     retornoModel.Mensagem = "Método não permitido para este usuário";
@@ -73,6 +73,7 @@ namespace ApiFinancas.Controllers
                     metaModel.Id = retornoBd;
                 };
 
+                retornoModel.Entidade = metaModel;
                 retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
                 retornoModel.Mensagem = "Meta incluída com sucesso";
                 return Ok(retornoModel);

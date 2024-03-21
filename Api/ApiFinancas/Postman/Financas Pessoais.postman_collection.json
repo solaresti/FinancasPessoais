@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "127813b0-9e4c-4a7a-8150-fdf30ef08fda",
+		"_postman_id": "46228c40-bf43-4f98-9852-fd33afb90fb1",
 		"name": "Financas Pessoais",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "33622623"
+		"_exporter_id": "33697394"
 	},
 	"item": [
 		{
@@ -154,6 +154,162 @@
 							"port": "7076",
 							"path": [
 								"Investimento",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categoria Despesa",
+			"item": [
+				{
+					"name": "Criar categoria despesa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "Na52akasrL8mjemi2APLqPP7wjysYxbN3tdEMXYoHdo=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"idUsuario\": 1,\r\n  \"nome\": \"Gasolina\",\r\n  \"tipoDespesa\": 1,\r\n  \"metaValorMensal\": 1000,\r\n  \"descritivo\": \"gasosa tá cara\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar categoria despesa",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "SNtUrgVltd28zMdS7fISBdZunAfLO4D+eUPjJvJLKDo=",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"IdUsuario\": \"2a02a62b-6f39-4a80-b32e-9a8a5a3e5c88\",\r\n  \"Nome\": \"Tesouro direto Pedro\",\r\n  \"Vencimento\": \"2024-04-10T12:00:00\",\r\n  \"Categoria\": 2,\r\n  \"Risco\": 3\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
+								"v1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter categoria despesa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/f67c29c6-5395-4111-8f60-854b5c6e980e",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
+								"v1",
+								"f67c29c6-5395-4111-8f60-854b5c6e980e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir categoria despesa",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/00EEFFAD-AEC7-43C3-9197-D49CC03B9282",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
+								"v1",
+								"00EEFFAD-AEC7-43C3-9197-D49CC03B9282"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter lista de categorias despesa",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "123213231",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/CategoriaDespesa/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"CategoriaDespesa",
 								"v1"
 							]
 						}
@@ -485,7 +641,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "1|1|638461052179101879",
+								"value": "rijXPOJ3JmT31mfma+Rg6ziBko8VJhRBS2TT9c3I3SA=",
 								"type": "text"
 							}
 						],
