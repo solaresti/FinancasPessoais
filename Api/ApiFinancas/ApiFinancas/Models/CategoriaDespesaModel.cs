@@ -8,11 +8,6 @@
         public string Nome { get; set; }
 
         /// <summary>
-        /// Obtém ou define o tipo da categoria de despesa.
-        /// </summary>
-        public int TipoDespesa { get; set; }
-
-        /// <summary>
         /// Obtém ou define o valor da meta mensal da categoria da despesa.
         /// </summary>
         public float MetaValorMensal { get; set; }

@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "f5ee000a-1d84-4859-8aa4-fb8581912716",
+		"_postman_id": "46e4e28b-71db-49b4-aeb4-deba5a04cda0",
 		"name": "Financas Pessoais",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "12831030"
+		"_exporter_id": "33697394"
 	},
 	"item": [
 		{
@@ -172,13 +172,13 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "Na52akasrL8mjemi2APLqPP7wjysYxbN3tdEMXYoHdo=",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\": 0,\r\n  \"idUsuario\": 1,\r\n  \"nome\": \"Gasolina\",\r\n  \"tipoDespesa\": 1,\r\n  \"metaValorMensal\": 1000,\r\n  \"descritivo\": \"gasosa tá cara\"\r\n}\r\n",
+							"raw": "{\r\n  \"idUsuario\": 1,\r\n  \"dataInclusao\": \"2024-03-21T19:44:21.458Z\",\r\n  \"dataAlteracao\": \"2024-03-21T19:44:21.458Z\",\r\n  \"versao\": 0,\r\n  \"nome\": \"teste 2\",\r\n  \"metaValorMensal\": 1500,\r\n  \"descritivo\": \"desc teste 2\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -207,13 +207,13 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "SNtUrgVltd28zMdS7fISBdZunAfLO4D+eUPjJvJLKDo=",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"IdUsuario\": \"2a02a62b-6f39-4a80-b32e-9a8a5a3e5c88\",\r\n  \"Nome\": \"Tesouro direto Pedro\",\r\n  \"Vencimento\": \"2024-04-10T12:00:00\",\r\n  \"Categoria\": 2,\r\n  \"Risco\": 3\r\n}\r\n",
+							"raw": "{\r\n  \"dataAlteracao\": \"2024-03-21T19:53:23.232Z\",\r\n  \"nome\": \"teste alterado\",\r\n  \"metaValorMensal\": 450,\r\n  \"descritivo\": \"desc\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -221,7 +221,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7076/CategoriaDespesa/v1/1",
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/6",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -230,7 +230,7 @@
 							"path": [
 								"CategoriaDespesa",
 								"v1",
-								"1"
+								"6"
 							]
 						}
 					},
@@ -243,12 +243,12 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://localhost:7076/CategoriaDespesa/v1/f67c29c6-5395-4111-8f60-854b5c6e980e",
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/6",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -257,7 +257,7 @@
 							"path": [
 								"CategoriaDespesa",
 								"v1",
-								"f67c29c6-5395-4111-8f60-854b5c6e980e"
+								"6"
 							]
 						}
 					},
@@ -270,12 +270,12 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://localhost:7076/CategoriaDespesa/v1/00EEFFAD-AEC7-43C3-9197-D49CC03B9282",
+							"raw": "https://localhost:7076/CategoriaDespesa/v1/5",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -284,7 +284,7 @@
 							"path": [
 								"CategoriaDespesa",
 								"v1",
-								"00EEFFAD-AEC7-43C3-9197-D49CC03B9282"
+								"5"
 							]
 						}
 					},
@@ -297,7 +297,7 @@
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
@@ -900,7 +900,7 @@
 	"variable": [
 		{
 			"key": "token",
-			"value": "rMMQSh/gdDsi7i2fHoBzPuHkfpHHDaQDfsxYMt9ffOs=",
+			"value": "eYjD6DcyPMVUppGE0CqGL75+HQFhhLu/0BvhjiihvXg=",
 			"type": "string"
 		}
 	]

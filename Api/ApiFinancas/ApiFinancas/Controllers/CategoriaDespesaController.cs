@@ -65,8 +65,8 @@ namespace ApiFinancas.Controllers
                     categoriaDespesa.Versao = 1;
                     categoriaDespesa.VoExcluido = false;
 
-                    string insertQuery = " INSERT INTO Main.CategoriasDespesas (IdUsuario, Nome, TipoDespesa, Descritivo, MetaValorMensal, DataInclusao, DataAlteracao, Versao, VoExcluido) " +
-                                         " VALUES  (@IdUsuario, @Nome, @TipoDespesa, @Descritivo, @MetaValorMensal, GETDATE(), GETDATE(), 1,0); " +
+                    string insertQuery = " INSERT INTO Main.CategoriasDespesas (IdUsuario, Nome, Descritivo, MetaValorMensal, DataInclusao, DataAlteracao, Versao, VoExcluido) " +
+                                         " VALUES  (@IdUsuario, @Nome, @Descritivo, @MetaValorMensal, GETDATE(), GETDATE(), 1,0); " +
                                          " SELECT CAST(SCOPE_IDENTITY() as int);";
 
 
@@ -116,7 +116,6 @@ namespace ApiFinancas.Controllers
                     categoriaDespesa.Id = id;
                     string insertQuery = "UPDATE [Main].[CategoriasDespesas] " +
                                         " SET [Nome] = @Nome, " +
-                                        " [TipoDespesa] = @TipoDespesa, " +
                                         " [Descritivo] = @Descritivo, " +
                                         " [MetaValorMensal] = @MetaValorMensal, " +
                                         " [DataAlteracao] = GETDATE()," +
