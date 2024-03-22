@@ -65,8 +65,8 @@ namespace ApiFinancas.Controllers
                     despesa.Versao = 1;
                     despesa.VoExcluido = false;
 
-                    string insertQuery = " INSERT INTO Main.Despesas (IdUsuario, TipoDespesa, IdCategoria, Descritivo, Valor, Data, DataInclusao, DataAlteracao, Versao, VoExcluido) " +
-                                         " VALUES  (@IdUsuario, @TipoDespesa, @IdCategoria, @Descritivo, @Valor, @Data, GETDATE(), GETDATE(), 1,0); " +
+                    string insertQuery = " INSERT INTO Main.Despesas (IdUsuario, IdCategoria, Descritivo, Valor, Data, DataInclusao, DataAlteracao, Versao, VoExcluido) " +
+                                         " VALUES  (@IdUsuario, @IdCategoria, @Descritivo, @Valor, @Data, GETDATE(), GETDATE(), 1,0); " +
                                          " SELECT CAST(SCOPE_IDENTITY() as int);";
 
 
@@ -115,8 +115,7 @@ namespace ApiFinancas.Controllers
                 {
                     despesa.Id = id;
                     string insertQuery = "UPDATE [Main].[Despesas] " +
-                                        " SET [TipoDespesa] = @TipoDespesa, " +
-                                        " [IdCategoria] = @IdCategoria, " +
+                                        " SET [IdCategoria] = @IdCategoria, " +
                                         " [Descritivo] = @Descritivo, " +
                                         " [Valor] = @Valor, " +
                                         " [Data] = @Data, " +
@@ -228,7 +227,7 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    string selectQuery = $" Select * FROM [Main].[Despesas] WHERE VoExcluido=0 {clausulaAdicional} ORDER BY Nome";
+                    string selectQuery = $" Select * FROM [Main].[Despesas] WHERE VoExcluido=0 {clausulaAdicional} ORDER BY idCategoria";
 
                     var model = new { idUsuario = idUsuario };
                     var retornoBd = contexto.Query<DespesaModel>(selectQuery, model).ToList();
