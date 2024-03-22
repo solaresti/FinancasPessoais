@@ -1,11 +1,15 @@
-﻿namespace ApiFinancas.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ApiFinancas.Models
 {
     public class InvestimentoModel : EntidadeBaseModel
     {
         /// <summary>
         /// Obtém ou define o nome do investimento.
         /// </summary>
+        [Required(ErrorMessage = "Campo obrigatório")]
         public string Nome { get; set; }
+
 
         /// <summary>
         /// Obtém ou define a data de vencimento do investimento (pode ser nulo).

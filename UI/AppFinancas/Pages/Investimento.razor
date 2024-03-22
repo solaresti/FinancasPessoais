@@ -1,0 +1,88 @@
+﻿@page "/investimento"
+@using ApiFinancas.Models
+@* @attribute [RenderModeInteractiveServer] *@
+
+<PageTitle>Investimento</PageTitle>
+
+<h1>Novo investimento</h1>
+
+<EditForm Model="@investimentoModel" OnValidSubmit="Gravar">
+    <DataAnnotationsValidator />
+    @* <ValidationSummary/> *@
+
+    <div class="mb-3">
+        <label class="form-label">Nome</label>
+        <InputText @bind-Value="investimentoModel.Nome" class="form-control"></InputText>
+        <ValidationMessage For="@(() => investimentoModel.Nome)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Vencimento</label>
+        <InputDate @bind-Value="investimentoModel.Vencimento" class="form-control"></InputDate>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Gravar</button>
+    <button class="btn btn-default">Cancelar</button>
+</EditForm>
+
+@* <p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
+
+@code {
+    public InvestimentoModel investimentoModel { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        investimentoModel = new InvestimentoModel()
+            {
+                Categoria = 1,
+                Nome = "Pedro Bó",
+                Vencimento = DateTime.Today
+            };
+
+        // flagProcessamento = true;
+        // await base.OnInitializedAsync();
+
+        // var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+
+        // if (conteudoSessionStorage.Value == null)
+        // {
+        //     sessionModel = new SessionModel();
+        // }
+        // else
+        // {
+        //     sessionModel = conteudoSessionStorage.Value;
+
+        //     var retornoService = await usuarioService.ObterListaFiliais(sessionModel.Token);
+        //     if (retornoService.Retorno == "Ok")
+        //     {
+        //         listaFiliais = retornoService.Entidades;
+        //     }
+        // }
+
+        // if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        // {
+        //     _navigationManager.NavigateTo("/Index");
+        // }
+        // flagProcessamento = false;
+    }
+
+    public async Task Gravar()
+    {
+        if (investimentoModel.Nome =="Poupança")
+        {
+            
+        }
+
+
+    }
+
+    // private int currentCount = 0;
+
+    // private void IncrementCount()
+    // {
+    //     currentCount++;
+    // }
+}
