@@ -1,13 +1,16 @@
-﻿namespace ApiFinancas.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ApiFinancas.Models
 {
     /// <summary>
-    /// Model extrato de uma determinada meta
+    /// Model extrato de uma determinada movimentação de investimento.
     /// </summary>
     public class MovimentacaoInvestimentoModel : EntidadeBaseModel
     {
         /// <summary>
         /// Obtém ou define o valor de uma movimentação de investimento.
         /// </summary>
+        [DeniedValues(0,ErrorMessage ="Não é possível incluir uma movimentação se valor")]
         public float Valor { get; set; }
 
         /// <summary>
@@ -28,6 +31,8 @@
         /// <summary>
         /// Obtém ou define a descrição da meta.
         /// </summary>
+        [Required (ErrorMessage ="O descritivo é obrigatório")]
+        [MinLength(3, ErrorMessage ="O descritivo precisa ter, pelo menos, 3 caracteres")]
         public string Descritivo { get; set; }
 
     }

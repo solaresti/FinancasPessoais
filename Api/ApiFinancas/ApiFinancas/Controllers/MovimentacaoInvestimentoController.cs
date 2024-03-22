@@ -33,9 +33,44 @@ namespace ApiFinancas.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("v1")]
-        public ActionResult CriarMovimentacao([FromHeader] string token, [FromBody] MovimentacaoInvestimentoModel movimentacoesModel)
+        public ActionResult CriarMovimentacao([FromHeader] string token, [FromBody] MovimentacaoInvestimentoModel movimentacaoModel)
         {
             RetornoEntidadeModel<MovimentacaoInvestimentoModel> retornoModel = new RetornoEntidadeModel<MovimentacaoInvestimentoModel>();
+
+            if (!ModelState.IsValid)
+            {
+                // Obtém todas as mensagens de erro
+                //List<string> mensagensDeErro = ModelState.Values
+                //    .SelectMany(v => v.Errors)
+                //    .Select(e => e.ErrorMessage)
+                //    .ToList();
+
+                retornoModel.Codigo = CodigosRetornoEnum.DadosInvalidos;
+                retornoModel.Mensagem = $"Dados inválidos.";
+                return StatusCode(400, retornoModel);
+
+            }
+
+            if (movimentacaoModel==null)
+            {
+                retornoModel.Codigo = CodigosRetornoEnum.PayloadInvalido;
+                retornoModel.Mensagem = "Dados inválidos (1F1A4CBD).";
+                return StatusCode(400, retornoModel);
+            }
+            else if (movimentacaoModel.Data > DateTime.Today)
+            {
+                retornoModel.Codigo = CodigosRetornoEnum.DadosInvalidos;
+                retornoModel.Mensagem = $"Você não pode lançar uma movimentação futura. (0B9D4CC2)";
+                return StatusCode(400, retornoModel);
+            }
+            else if (movimentacaoModel.Data < DateTime.Today.AddDays(-730))
+            {
+                retornoModel.Codigo = CodigosRetornoEnum.DadosInvalidos;
+                retornoModel.Mensagem = $"Você não pode lançar uma movimentação anterior a {DateTime.Today.AddDays(-730).ToString("dd/MM/yyyy")} .";
+                return StatusCode(400, retornoModel);
+            }
+ 
+
 
             try
             {
@@ -52,31 +87,30 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    movimentacoesModel.IdUsuario = idUsuario;
-                    movimentacoesModel.DataInclusao = DateTime.Now;
-                    movimentacoesModel.DataAlteracao = movimentacoesModel.DataInclusao;
-                    movimentacoesModel.Versao = 1;
-                    movimentacoesModel.VoExcluido = false;
+                    movimentacaoModel.IdUsuario = idUsuario;
+                    movimentacaoModel.DataInclusao = DateTime.Now;
+                    movimentacaoModel.DataAlteracao = movimentacaoModel.DataInclusao;
+                    movimentacaoModel.Versao = 1;
+                    movimentacaoModel.VoExcluido = false;
 
                     string insertQuery = " INSERT INTO Main.MovimentacoesInvestimentos (IdUsuario, IdMeta, IdInvestimento, Descritivo, Valor, Data, DataInclusao, DataAlteracao, Versao, VoExcluido) " +
                                          " VALUES  (@IdUsuario, @IdMeta, @IdInvestimento, @Descritivo, @Valor, @Data, GETDATE(), GETDATE(), 1,0); " +
                                          " SELECT CAST(SCOPE_IDENTITY() as int);";
 
-
-                    // var rowsAffected = contexto.Execute(insertQuery, movimentacoesModel);
-
-                    var retornoBd = contexto.QuerySingle<int>(insertQuery, movimentacoesModel);
-                    movimentacoesModel.Id = retornoBd;
+                    
+                    var retornoBd = contexto.QuerySingle<int>(insertQuery, movimentacaoModel);
+                    movimentacaoModel.Id = retornoBd;
                 };
 
 
                 retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
                 retornoModel.Mensagem = "Movimentação incluída com sucesso";
+                retornoModel.Entidade = movimentacaoModel;
                 return Ok(retornoModel);
             }
             catch (Exception ex)
             {
-                retornoModel.Mensagem = $"Erro na inclusão da movimentação: {ex.Message}";
+                retornoModel.Mensagem = $"Erro na inclusão da movimentação (E8275746): {ex.Message}";
                 retornoModel.Codigo = CodigosRetornoEnum.Excecao;
                 return StatusCode(500, retornoModel);
             }
@@ -84,7 +118,7 @@ namespace ApiFinancas.Controllers
 
         [HttpPut]
         [Route("v1/{id}")]
-        public ActionResult AlterarMovimentacao([FromHeader] string token, [FromBody] MovimentacaoInvestimentoModel movimentacoesModel, [FromRoute] int id)
+        public ActionResult AlterarMovimentacao([FromHeader] string token, [FromBody] MovimentacaoInvestimentoModel movimentacaoModel, [FromRoute] int id)
         {
             RetornoBaseModel retornoModel = new RetornoBaseModel();
             try
@@ -108,7 +142,7 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    movimentacoesModel.Id = id;
+                    movimentacaoModel.Id = id;
                     string insertQuery = "UPDATE [Main].[MovimentacoesInvestimentos] " +
                                         " SET [Valor] = @Valor, " +
                                         " [Data] = @Data, " +
@@ -118,7 +152,7 @@ namespace ApiFinancas.Controllers
                                         " [Versao] = Versao+1 " +
                                         $" WHERE Id = @Id AND VoExcluido=0  {clausulaAdicional}";
 
-                    var retorno = contexto.Execute(insertQuery, movimentacoesModel);
+                    var retorno = contexto.Execute(insertQuery, movimentacaoModel);
                 };
 
                 retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
@@ -162,11 +196,11 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    var usuarioModel = new { Id = id, IdUsuario = idUsuario };
+                    var movimentacaoModel = new { Id = id, IdUsuario = idUsuario };
                     string insertQuery = " Select * FROM [Main].[MovimentacoesInvestimentos] " +
                                          $" WHERE Id = @Id AND VoExcluido=0 {clausulaAdicional}";
 
-                    var retornoBd = contexto.Query<MovimentacaoInvestimentoModel>(insertQuery, retornoModel).FirstOrDefault();
+                    var retornoBd = contexto.Query<MovimentacaoInvestimentoModel>(insertQuery, movimentacaoModel).FirstOrDefault();
 
                     if (retornoBd == null)
                     {

@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "46e4e28b-71db-49b4-aeb4-deba5a04cda0",
+		"_postman_id": "2bd49499-66ee-4bc5-868c-c3605c14c75b",
 		"name": "Financas Pessoais",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "33697394"
+		"_exporter_id": "33622623"
 	},
 	"item": [
 		{
@@ -319,6 +319,162 @@
 			]
 		},
 		{
+			"name": "Meta",
+			"item": [
+				{
+					"name": "Criar Meta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idUsuario\": 1,\r\n  \"nome\": \"Reforma banheiro\",\r\n  \"descritivo\": \"\",\r\n  \"valor\": 20000,\r\n  \"data\": \"2025-01-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/Meta/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Meta",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar Meta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"idUsuario\": 4,\r\n  \"nome\": \"Aposentadoria\",\r\n  \"descritivo\": \"Parar de trabalhar\",\r\n  \"valor\": 500000000,\r\n  \"data\": \"2050-03-19T13:02:52.023Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/Meta/v1/10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Meta",
+								"v1",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter Meta",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Meta/v1/10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Meta",
+								"v1",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Excluir Meta",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Meta/v1/9",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Meta",
+								"v1",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter lista de metas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/Meta/v1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"Meta",
+								"v1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Movimentações em Investimentos",
 			"item": [
 				{
@@ -334,7 +490,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"Valor\": 1200,\r\n  \"Data\": \"2024-02-21T08:00:00\",\r\n  \"IdMeta\": 5,\r\n  \"IdInvestimento\": 8,\r\n  \"Descritivo\": \"RE\"\r\n}\r\n",
+							"raw": "    {\r\n      \"IdUsuario\": 1,\r\n      \"Valor\": 10000,\r\n      \"IdMeta\": 5,\r\n      \"IdInvestimento\": 8,\r\n      \"Data\": \"2024-03-21\",\r\n      \"Descritivo\": \"\"\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -357,19 +513,19 @@
 					"response": []
 				},
 				{
-					"name": "Alterar categoria despesa",
+					"name": "Alterar movimentação",
 					"request": {
 						"method": "PUT",
 						"header": [
 							{
 								"key": "token",
-								"value": "SNtUrgVltd28zMdS7fISBdZunAfLO4D+eUPjJvJLKDo=",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"IdUsuario\": \"2a02a62b-6f39-4a80-b32e-9a8a5a3e5c88\",\r\n  \"Nome\": \"Tesouro direto Pedro\",\r\n  \"Vencimento\": \"2024-04-10T12:00:00\",\r\n  \"Categoria\": 2,\r\n  \"Risco\": 3\r\n}\r\n",
+							"raw": "    {\r\n      \"IdUsuario\": 4,\r\n      \"IdMeta\": 1,\r\n      \"IdInvestimento\": 1,\r\n      \"Descritivo\": \"Descrição da movimentação 1\",\r\n      \"Valor\": 1000.00,\r\n      \"Data\": \"2024-03-21T00:00:00\"\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -377,96 +533,70 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:7076/CategoriaDespesa/v1/1",
+							"raw": "https://localhost:7076/MovimentacaoInvestimento/v1/9",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7076",
 							"path": [
-								"CategoriaDespesa",
+								"MovimentacaoInvestimento",
 								"v1",
-								"1"
+								"9"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Obter categoria despesa",
+					"name": "Obter movimentacao",
 					"request": {
 						"method": "GET",
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://localhost:7076/CategoriaDespesa/v1/f67c29c6-5395-4111-8f60-854b5c6e980e",
+							"raw": "https://localhost:7076/MovimentacaoInvestimento/v1/9",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7076",
 							"path": [
-								"CategoriaDespesa",
+								"MovimentacaoInvestimento",
 								"v1",
-								"f67c29c6-5395-4111-8f60-854b5c6e980e"
+								"9"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Excluir categoria despesa",
+					"name": "Excluir movimentacao",
 					"request": {
 						"method": "DELETE",
 						"header": [
 							{
 								"key": "token",
-								"value": "123213231",
+								"value": "{{token}}",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "https://localhost:7076/CategoriaDespesa/v1/00EEFFAD-AEC7-43C3-9197-D49CC03B9282",
+							"raw": "https://localhost:7076/ExcluirMovimentacao/v1/",
 							"protocol": "https",
 							"host": [
 								"localhost"
 							],
 							"port": "7076",
 							"path": [
-								"CategoriaDespesa",
+								"ExcluirMovimentacao",
 								"v1",
-								"00EEFFAD-AEC7-43C3-9197-D49CC03B9282"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Obter lista de categorias despesa",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "123213231",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:7076/CategoriaDespesa/v1",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7076",
-							"path": [
-								"CategoriaDespesa",
-								"v1"
+								""
 							]
 						}
 					},
@@ -523,162 +653,6 @@
 								"v1",
 								"PosicaoMeta",
 								"5"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Meta",
-			"item": [
-				{
-					"name": "Criar Meta",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"idUsuario\": 1,\r\n  \"nome\": \"Reforma banheiro\",\r\n  \"descritivo\": \"\",\r\n  \"valor\": 20000,\r\n  \"data\": \"2025-01-01\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7076/Meta/v1",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7076",
-							"path": [
-								"Meta",
-								"v1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Alterar Meta",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "token",
-								"value": "QInmC92YihX9+KFc2n3S4MZp2KpjDldhDAyvRMIzuAU=",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"idUsuario\": 3,\r\n  \"nome\": \"Ajudar Gabriela e Juliana\",\r\n  \"descritivo\": \"Ficar rico\",\r\n  \"valor\": 500000000,\r\n  \"data\": \"2030-03-19T13:02:52.023Z\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://localhost:7076/Meta/v1/2",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7076",
-							"path": [
-								"Meta",
-								"v1",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Obter Meta",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "QInmC92YihX9+KFc2n3S4MZp2KpjDldhDAyvRMIzuAU=",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:7076/Meta/v1/2",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7076",
-							"path": [
-								"Meta",
-								"v1",
-								"2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Excluir Meta",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:7076/Meta/v1/1",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7076",
-							"path": [
-								"Meta",
-								"v1",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Obter lista de metas",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "token",
-								"value": "{{token}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:7076/Meta/v1",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "7076",
-							"path": [
-								"Meta",
-								"v1"
 							]
 						}
 					},
