@@ -221,7 +221,8 @@ namespace ApiFinancas.Controllers
                 {
                     string insertQuery = $" Select * FROM [Main].[Investimentos] WHERE VoExcluido=0 {clausulaExtra} ORDER BY Nome ";
 
-                    var retornoBd = contexto.Query<InvestimentoModel>(insertQuery).ToList();
+                    var model = new { idUsuario = idUsuario };
+                    var retornoBd = contexto.Query<InvestimentoModel>(insertQuery, model).ToList();
 
                     if (retornoBd == null)
                     {
