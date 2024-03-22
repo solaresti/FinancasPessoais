@@ -631,6 +631,34 @@
 					"response": []
 				},
 				{
+					"name": "Obter extrato por investimento",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/MovimentacaoInvestimento/v1/ExtratoInvestimento/10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"MovimentacaoInvestimento",
+								"v1",
+								"ExtratoInvestimento",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Obter posição meta",
 					"request": {
 						"method": "GET",
@@ -653,6 +681,34 @@
 								"v1",
 								"PosicaoMeta",
 								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obter posição por investimento",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/MovimentacaoInvestimento/v1/PosicaoInvestimento/10",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"MovimentacaoInvestimento",
+								"v1",
+								"PosicaoInvestimento",
+								"10"
 							]
 						}
 					},

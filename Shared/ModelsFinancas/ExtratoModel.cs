@@ -3,7 +3,7 @@
     /// <summary>
     /// Model de Metas
     /// </summary>
-    public class ExtratoPorMetaModel 
+    public class ExtratoModel 
     {
         /// <summary>
         /// Obtém ou define o valor de uma movimentação de investimento.

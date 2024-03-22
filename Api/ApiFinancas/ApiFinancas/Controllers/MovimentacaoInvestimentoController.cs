@@ -351,7 +351,7 @@ namespace ApiFinancas.Controllers
         public ActionResult ObterExtratoPorMeta([FromHeader] string token, [FromRoute] int idMeta)
         {
 
-            RetornoListaEntidadesModel<ExtratoPorMetaModel> retornoModel = new RetornoListaEntidadesModel<ExtratoPorMetaModel>();
+            RetornoListaEntidadesModel<ExtratoModel> retornoModel = new RetornoListaEntidadesModel<ExtratoModel>();
 
             try
             {
@@ -382,7 +382,7 @@ namespace ApiFinancas.Controllers
                                          " Data";
 
                     var model = new { IdUsuario = idUsuario, IdMeta = idMeta };
-                    var retornoBd = contexto.Query<ExtratoPorMetaModel>(selectQuery, model).ToList();
+                    var retornoBd = contexto.Query<ExtratoModel>(selectQuery, model).ToList();
 
                     if (retornoBd == null)
                     {
@@ -413,7 +413,7 @@ namespace ApiFinancas.Controllers
         public ActionResult ObterPosicaoMetaPorInvestimento([FromHeader] string token, [FromRoute] int idMeta)
         {
 
-            RetornoListaEntidadesModel<PosicaoPorMetaModel> retornoModel = new RetornoListaEntidadesModel<PosicaoPorMetaModel>();
+            RetornoListaEntidadesModel<PosicaoModel> retornoModel = new RetornoListaEntidadesModel<PosicaoModel>();
 
             try
             {
@@ -446,7 +446,7 @@ namespace ApiFinancas.Controllers
                                          " [Investimentos].[Nome]";
 
                     var model = new { IdUsuario = idUsuario, IdMeta = idMeta };
-                    var retornoBd = contexto.Query<PosicaoPorMetaModel>(selectQuery, model).ToList();
+                    var retornoBd = contexto.Query<PosicaoModel>(selectQuery, model).ToList();
 
                     if (retornoBd == null)
                     {
@@ -471,6 +471,134 @@ namespace ApiFinancas.Controllers
                 return StatusCode(500, retornoModel);
             }
         }
+
+        [HttpGet]
+        [Route("v1/ExtratoInvestimento/{idInvestimento}")]
+        public ActionResult ObterExtratoPorInvestimento([FromHeader] string token, [FromRoute] int idInvestimento)
+        {
+
+            RetornoListaEntidadesModel<ExtratoModel> retornoModel = new RetornoListaEntidadesModel<ExtratoModel>();
+
+            try
+            {
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
+
+                using (var contexto = new SqlConnection(conexaoBanco))
+                {
+                    string selectQuery = " SELECT " +
+                                         " [MovimentacoesInvestimentos].[Data]," +
+                                         " [MovimentacoesInvestimentos].[Descritivo]," +
+                                         " [MovimentacoesInvestimentos].[Valor]," +
+                                         " [MovimentacoesInvestimentos].[IdMeta]," +
+                                         " [Metas].[Nome] " +
+                                         " FROM [Main].[MovimentacoesInvestimentos] WITH (NOLOCK) " +
+                                         " JOIN [Main].[Metas] WITH (NOLOCK) ON (MovimentacoesInvestimentos.IdMeta = Metas.Id)" +
+                                         " WHERE [MovimentacoesInvestimentos].[IdUsuario] = @IdUsuario " +
+                                         " And [MovimentacoesInvestimentos].[IdInvestimento] = @IdInvestimento" +
+                                         " ORDER BY" +
+                                         " Data";
+
+                    var model = new { IdUsuario = idUsuario, IdInvestimento = idInvestimento };
+                    var retornoBd = contexto.Query<ExtratoModel>(selectQuery, model).ToList();
+
+                    if (retornoBd == null)
+                    {
+                        retornoModel.Codigo = CodigosRetornoEnum.NaoLocalizado;
+                        retornoModel.Mensagem = "Nenhum registro localizado";
+                        return StatusCode(400, retornoModel);
+                    }
+                    else
+                    {
+                        retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
+                        retornoModel.Mensagem = "Extrato obtido com sucesso.";
+                        retornoModel.ListaEntidades = retornoBd;
+                        return Ok(retornoModel);
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                retornoModel.Mensagem = $"Erro na obtenção do extrato (FACEA1B5): {ex.Message}";
+                retornoModel.Codigo = CodigosRetornoEnum.Excecao;
+                return StatusCode(500, retornoModel);
+            }
+        }
+
+
+        [HttpGet]
+        [Route("v1/PosicaoInvestimento/{idInvestimento}")]
+        public ActionResult ObterPosicaoInvestimentoPorMeta([FromHeader] string token, [FromRoute] int idInvestimento)
+        {
+
+            RetornoListaEntidadesModel<PosicaoModel> retornoModel = new RetornoListaEntidadesModel<PosicaoModel>();
+
+            try
+            {
+                string mensagemErro = "";
+                int idUsuario = 0;
+                TipoContaEnum tipoUsuario = TipoContaEnum.UsuarioComum;
+                bool tokenValido = UsuarioService.ValidarToken(token, ref idUsuario, ref tipoUsuario, ref mensagemErro);
+                if (!tokenValido)
+                {
+                    retornoModel.Codigo = CodigosRetornoEnum.NaoAutorizado;
+                    retornoModel.Mensagem = mensagemErro;
+                    return StatusCode(403, retornoModel);
+                }
+
+                using (var contexto = new SqlConnection(conexaoBanco))
+                {
+                    string selectQuery = " SELECT " +
+                                         " SUM([MovimentacoesInvestimentos].[Valor]) As Valor," +
+                                         " [MovimentacoesInvestimentos].[IdMeta]," +
+                                         " [Metas].[Nome]" +
+                                         " FROM " +
+                                         " [Main].[MovimentacoesInvestimentos] WITH (NOLOCK)" +
+                                         " JOIN [Main].[Metas] WITH (NOLOCK) ON (MovimentacoesInvestimentos.IdMeta = Metas.Id)" +
+                                         " WHERE [MovimentacoesInvestimentos].[IdUsuario] = @IdUsuario " +
+                                         " And [MovimentacoesInvestimentos].[IdInvestimento] = @IdInvestimento " +
+                                         " GROUP BY " +
+                                         " [MovimentacoesInvestimentos].[IdMeta]," +
+                                         " [Metas].[Nome]" +
+                                         " ORDER BY" +
+                                         " [Metas].[Nome]";
+
+                    var model = new { IdUsuario = idUsuario, IdInvestimento = idInvestimento };
+                    var retornoBd = contexto.Query<PosicaoModel>(selectQuery, model).ToList();
+
+                    if (retornoBd == null)
+                    {
+                        retornoModel.Codigo = CodigosRetornoEnum.NaoLocalizado;
+                        retornoModel.Mensagem = "Nenhum registro localizado";
+                        return StatusCode(400, retornoModel);
+                    }
+                    else
+                    {
+                        retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
+                        retornoModel.Mensagem = "Extrato obtido com sucesso.";
+                        retornoModel.ListaEntidades = retornoBd;
+                        return Ok(retornoModel);
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+
+                retornoModel.Mensagem = $"Erro na obtenção do extrato (54914750): {ex.Message}";
+                retornoModel.Codigo = CodigosRetornoEnum.Excecao;
+                return StatusCode(500, retornoModel);
+            }
+        }
+
     }
 
 }
