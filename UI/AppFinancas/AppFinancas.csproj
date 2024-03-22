@@ -10,4 +10,10 @@
     <ProjectReference Include="..\..\Shared\ModelsFinancas\ModelsFinancas.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Metas\" />
+    <Folder Include="Pages\Movimentacoes\" />
+    <Folder Include="Pages\Usuarios\" />
+  </ItemGroup>
+
 </Project>
