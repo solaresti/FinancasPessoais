@@ -1,10 +1,19 @@
 ﻿@page "/investimento/create"
 @using ApiFinancas.Models
+@using AppFinancas.Models
+
 @rendermode InteractiveServer
 
 <PageTitle>Investimento</PageTitle>
 
 <h1>Novo investimento</h1>
+
+@if (mensagem!= string.Empty)
+{
+    <label class="text text-danger">@mensagem</label>
+}
+
+
 
 <EditForm Model="@investimentoModel" OnValidSubmit="Gravar">
     <DataAnnotationsValidator />
@@ -31,6 +40,7 @@
 
 @code {
     public InvestimentoModel investimentoModel { get; set; } = new();
+    public string mensagem { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -72,9 +82,27 @@
     public async Task Gravar()
     {
 
-        investimentoModel.IdUsuario = 1;
-        string token = "";
-        investimentoModel.Categoria = 1;
+        // investimentoModel.IdUsuario = 1;
+        // string token = "";
+        // investimentoModel.Categoria = 1;
+        mensagem = "";
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+
+        if (retornoService.Codigo !=  ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            string token = retornoService.Mensagem;
+            mensagem = "Token: " + token;
+        }
+
+        
+
     }
 
     // private int currentCount = 0;

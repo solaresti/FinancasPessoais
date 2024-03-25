@@ -11,9 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Metas\" />
     <Folder Include="Pages\Movimentacoes\" />
     <Folder Include="Pages\Usuarios\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="RestSharp" Version="110.2.0" />
   </ItemGroup>
 
 </Project>
