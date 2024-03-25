@@ -1,42 +1,39 @@
-﻿@page "/meta"
+﻿@page "/meta/posicao/{id:int}/{nomeMeta}"
 @using AppFinancas.Models
 @rendermode InteractiveServer
 
 <PageTitle>Metas</PageTitle>
 
-<h1>Lista de metas</h1>
-
-
-
+<h1>Posição de: @NomeMeta</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Meta</th>
-            <th>Data</th>
+            <th>Investimento</th>
             <th><div align="right">Valor</div></th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var meta in ListaMetas)
+        @foreach (var movimentacao in ListaMovimentacoes)
         {
             <tr>
-                <td>@meta.Nome</td>
-                <td>@meta.Data.ToString("dd/MM/yyyy")</td>
-                <td align="right">@meta.Valor.ToString("C")</td>
-                <td>
-                    <a class="btn btn-info" href="meta/extrato/@meta.Id/@meta.Nome">Extrato</a>
-                    <a class="btn btn-info" href="meta/posicao/@meta.Id/@meta.Nome">Posição</a>
-                </td>
+                <td>@movimentacao.Nome</td>
+                <td align="right">@movimentacao.Valor.ToString("C")</td>
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <th scope="row">Total</th>
+            <th></th>
+            <td><div align="right">@ValorTotal.ToString("C")</div></td>
+        </tr>
+    </tfoot>
 
 </table>
 
-<a href="/investimento/create" class="btn btn-primary">Nova meta</a>
-<a href="/" class="btn btn-default">Voltar</a>
+<a href="/movimentacao/create" class="btn btn-primary">Incluir lançamento</a>
+<a href="/meta" class="btn btn-default">Voltar</a>
 
 <br />
 
@@ -49,8 +46,16 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
 
 @code {
-    string mensagem = "Carregando lista de metas...";
-    public List<MetaModel> ListaMetas { get; set; } = new();
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public string NomeMeta { get; set; }
+
+    string mensagem = "Carregando dados...";
+    float ValorTotal { get; set; } = 0;
+    List<PosicaoModel> ListaMovimentacoes { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -71,18 +76,15 @@
             mensagem = "";
         }
 
-        RetornoListaEntidadesModel<MetaModel> retornoApi = await MetaService.ObterListaMetas(token);
+        RetornoListaEntidadesModel<PosicaoModel> retornoApi = await MovimentacaoInvestimentoService.ObterPosicaoDeMetaPorInvestimento(token, Id);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
-            ListaMetas = retornoApi.ListaEntidades;
+            ListaMovimentacoes = retornoApi.ListaEntidades;
+            ValorTotal = retornoApi.ListaEntidades.Sum(lancamento => lancamento.Valor);
         }
 
     }
 
-    private void Teste()
-    {
 
-        // adsfjsdklfjksdl
-    }
 }

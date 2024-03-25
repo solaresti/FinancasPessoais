@@ -107,5 +107,92 @@ namespace AppFinancas.Services
                 return retornoApi;
             }
         }
+
+        public static async Task<RetornoListaEntidadesModel<PosicaoModel>> ObterPosicaoDeInvestimentoPorMeta(string token, int id)
+        {
+            RetornoListaEntidadesModel<PosicaoModel> retornoApi = new RetornoListaEntidadesModel<PosicaoModel>();
+            try
+            {
+
+                string mensagemErro = "";
+                // Consumir o serviço
+                string urlBaseServico = "https://localhost:7076";
+                var client = new RestClient(urlBaseServico);
+
+
+                var request = new RestRequest($"MovimentacaoInvestimento/v1/PosicaoInvestimento/{id}", Method.Get);
+                request.AddHeader("token", token);
+                RestResponse response = client.Execute(request);
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string mensagemErroApi = "";
+                    if (string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (AAD97FB8).";
+                        return retornoApi;
+                    }
+                    else
+                    {
+                        retornoApi = JsonConvert.DeserializeObject<RetornoListaEntidadesModel<PosicaoModel>>(response.Content);
+                        return retornoApi;
+                    }
+
+                }
+
+                retornoApi = JsonConvert.DeserializeObject<RetornoListaEntidadesModel<PosicaoModel>>(response.Content);
+                return retornoApi;
+            }
+            catch (Exception ex)
+            {
+                retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (5395DA72): {ex.Message}";
+                return retornoApi;
+            }
+        }
+
+        public static async Task<RetornoListaEntidadesModel<PosicaoModel>> ObterPosicaoDeMetaPorInvestimento(string token, int id)
+        {
+            RetornoListaEntidadesModel<PosicaoModel> retornoApi = new RetornoListaEntidadesModel<PosicaoModel>();
+            try
+            {
+
+                string mensagemErro = "";
+                // Consumir o serviço
+                string urlBaseServico = "https://localhost:7076";
+                var client = new RestClient(urlBaseServico);
+
+
+                var request = new RestRequest($"MovimentacaoInvestimento/v1/PosicaoMeta/{id}", Method.Get);
+                request.AddHeader("token", token);
+                RestResponse response = client.Execute(request);
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string mensagemErroApi = "";
+                    if (string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (AFF1742F).";
+                        return retornoApi;
+                    }
+                    else
+                    {
+                        retornoApi = JsonConvert.DeserializeObject<RetornoListaEntidadesModel<PosicaoModel>>(response.Content);
+                        return retornoApi;
+                    }
+
+                }
+
+                retornoApi = JsonConvert.DeserializeObject<RetornoListaEntidadesModel<PosicaoModel>>(response.Content);
+                return retornoApi;
+            }
+            catch (Exception ex)
+            {
+                retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (5EAF1235): {ex.Message}";
+                return retornoApi;
+            }
+        }
+
     }
 }
