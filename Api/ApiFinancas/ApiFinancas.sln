@@ -5,9 +5,9 @@ VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiFinancas", "ApiFinancas\ApiFinancas.csproj", "{164D7ED7-571E-40A2-B019-60AD812D4C4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelsFinancas", "..\..\Shared\ModelsFinancas\ModelsFinancas.csproj", "{623C4F81-25C1-471D-9B2B-A713C16923C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelsFinancas", "..\..\Shared\ModelsFinancas\ModelsFinancas.csproj", "{623C4F81-25C1-471D-9B2B-A713C16923C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppFinancas", "..\..\UI\AppFinancas\AppFinancas.csproj", "{1C3F3275-C403-4C8C-8588-A8BC2AAE9FFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppFinancas", "..\..\UI\AppFinancas\AppFinancas.csproj", "{1C3F3275-C403-4C8C-8588-A8BC2AAE9FFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
