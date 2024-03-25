@@ -2,7 +2,7 @@
 @using AppFinancas.Models
 @rendermode InteractiveServer
 
-<PageTitle>Investimento</PageTitle>
+<PageTitle>Investimentos</PageTitle>
 
 <h1>Lista de investimentos</h1>
 
@@ -29,7 +29,7 @@
                 <td>@investimento.Risco</td>
                 <td>
                     <a class="btn btn-info" href="investimento/extrato/@investimento.Id/@investimento.Nome">Extrato</a>
-                    <a class="btn btn-info" href="investimento/posicao/@investimento.Id">Posição</a>
+                    <a class="btn btn-info" href="investimento/posicao/@investimento.Id/@investimento.Nome">Posição</a>
                 </td>
             </tr>
         }

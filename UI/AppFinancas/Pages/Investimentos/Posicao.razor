@@ -1,15 +1,14 @@
-﻿@page "/investimento/extrato/{id:int}/{nomeInvestimento}"
+﻿@page "/investimento/posicao/{id:int}/{nomeInvestimento}"
 @using AppFinancas.Models
 @rendermode InteractiveServer
 
-<PageTitle>Investimentos</PageTitle>
+<PageTitle>Investimento</PageTitle>
 
-<h1>Extrato de: @NomeInvestimento</h1>
+<h1>Posição de: @NomeInvestimento</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Data</th>
             <th>Meta</th>
             <th><div align="right">Valor</div></th>
         </tr>
@@ -18,7 +17,6 @@
         @foreach (var movimentacao in ListaMovimentacoes)
         {
             <tr>
-                <td>@movimentacao.Data.ToString("dd/MM/yyyy")</td>
                 <td>@movimentacao.Nome</td>
                 <td align="right">@movimentacao.Valor.ToString("C")</td>
             </tr>
@@ -57,7 +55,7 @@
 
     string mensagem = "Carregando dados...";
     float ValorTotal { get; set; } = 0;
-    List<ExtratoModel> ListaMovimentacoes { get; set; } = new();
+    List<PosicaoModel> ListaMovimentacoes { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,7 +76,7 @@
             mensagem = "";
         }
 
-        RetornoListaEntidadesModel<ExtratoModel> retornoApi = await MovimentacaoInvestimentoService.ObterExtratoPorInvestimento(token, Id);
+        RetornoListaEntidadesModel<PosicaoModel> retornoApi = await MovimentacaoInvestimentoService.ObterPosicaoDeInvestimentoPorMeta(token, Id);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
