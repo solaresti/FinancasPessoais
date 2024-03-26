@@ -4,7 +4,7 @@
 
 <PageTitle>Investimentos</PageTitle>
 
-<h2>Extrato de <b>@NomeInvestimento</b></h2>
+<h3>Extrato de <b>@NomeInvestimento</b></h3>
 
 <table class="table">
 
@@ -69,6 +69,10 @@
 
         .money {
             text-align: right;
+        }
+
+        .total {
+            text-align: right;
             font-weight: bold;
         }
     </style>
@@ -94,7 +98,7 @@
         <tr>
             <th scope="row">Total</th>
             <th></th>
-            <td class="money">@ValorTotal.ToString("C")</td>
+            <td class="total">@ValorTotal.ToString("C")</td>
         </tr>
     </tfoot>
 
