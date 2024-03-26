@@ -1,6 +1,7 @@
-﻿@page "/investimento/create"
+﻿@page "/investimento/incluir"
 @using ApiFinancas.Models
 @using AppFinancas.Models
+@inject NavigationManager Navigation
 
 @rendermode InteractiveServer
 
@@ -8,7 +9,7 @@
 
 <h1>Novo investimento</h1>
 
-@if (mensagem!= string.Empty)
+@if (mensagem != string.Empty)
 {
     <label class="text text-danger">@mensagem</label>
 }
@@ -30,6 +31,30 @@
         <InputDate @bind-Value="investimentoModel.Vencimento" class="form-control"></InputDate>
     </div>
 
+    <div class="mb-3">
+        <label class="form-label">Categoria</label>
+        <InputSelect @bind-Value="investimentoModel.Categoria" class="form-control">
+            @foreach (var categoria in ListaCategorias)
+            {
+                <option value="@categoria.Value">
+                    @categoria.Key
+                </option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Risco</label>
+        <InputSelect @bind-Value="investimentoModel.Risco" class="form-control">
+            @foreach (var risco in ListaRisco)
+            {
+                <option value="@risco.Value">
+                    @risco.Key
+                </option>
+            }
+        </InputSelect>
+    </div>
+
     <button type="submit" class="btn btn-primary">Gravar</button>
     <a href="/investimento" class="btn btn-default">Cancelar</a>
 </EditForm>
@@ -42,15 +67,24 @@
     public InvestimentoModel investimentoModel { get; set; } = new();
     public string mensagem { get; set; }
 
+    public Dictionary<string, string> ListaCategorias { get; set; } = new Dictionary<string, string>();
+    public Dictionary<string, string> ListaRisco { get; set; } = new Dictionary<string, string>();
+
 
     protected override async Task OnInitializedAsync()
     {
-        investimentoModel = new InvestimentoModel()
-            {
-                Categoria = 1,
-                Nome = "Pedro Bó",
-                Vencimento = DateTime.Today
-            };
+        investimentoModel = new InvestimentoModel(); /* { Categoria = 1, Risco = 1, Nome = "", Vencimento = DateTime.Today.AddYears(1) }; */
+
+        ListaCategorias.Add("Renda Fixa", "1");
+        ListaCategorias.Add("Renda Variável", "2");
+        ListaCategorias.Add("Cambial", "3");
+        ListaCategorias.Add("Criptomoeda", "4");
+        ListaCategorias.Add("Multimercado", "5");
+
+        ListaRisco.Add("Baixo", "1");
+        ListaRisco.Add("Médio", "2");
+        ListaRisco.Add("Alto", "3");
+
 
         // flagProcessamento = true;
         // await base.OnInitializedAsync();
@@ -82,26 +116,31 @@
     public async Task Gravar()
     {
 
-        // investimentoModel.IdUsuario = 1;
-        // string token = "";
-        // investimentoModel.Categoria = 1;
         mensagem = "";
         RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
         var x = UsuarioService.ObterToken(model);
         RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-
-        if (retornoService.Codigo !=  ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        string token = "";
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
             mensagem = retornoService.Mensagem;
         }
         else
         {
             ///Limpando a mensagem
-            string token = retornoService.Mensagem;
-            mensagem = "Token: " + token;
+            token = retornoService.Mensagem;
+            mensagem = "";
         }
 
-        
+        RetornoEntidadeModel<InvestimentoModel> retornoInclusao = await InvestimentoService.IncluirOuAlterarInvestimento(token, investimentoModel, flagInclusao: true);
+
+        if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+
+        Navigation.NavigateTo("/investimento");
 
     }
 

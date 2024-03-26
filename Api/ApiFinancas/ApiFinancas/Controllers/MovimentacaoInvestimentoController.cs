@@ -248,16 +248,9 @@ namespace ApiFinancas.Controllers
                     return StatusCode(403, retornoModel);
                 }
 
-                string clausulaAdicional = "";
-                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
-                {
-                    clausulaAdicional = " AND IdUsuario = @IdUsuario";
-                }
-
-
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    string selectQuery = $" Select * FROM [Main].[MovimentacoesInvestimentos] WHERE VoExcluido=0 {clausulaAdicional} ORDER BY Data";
+                    string selectQuery = $" Select * FROM [Main].[MovimentacoesInvestimentos] WHERE VoExcluido=0 AND IdUsuario = @IdUsuario ORDER BY Data";
 
                     var model = new { idUsuario = idUsuario };
                     var retornoBd = contexto.Query<MovimentacaoInvestimentoModel>(selectQuery, model).ToList();
@@ -305,18 +298,12 @@ namespace ApiFinancas.Controllers
                     return StatusCode(403, retornoModel);
                 }
 
-                string clausulaAdicional = "";
-                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
-                {
-                    clausulaAdicional = " AND IdUsuario = @IdUsuario";
-                }
-
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     var model = new { Id = id, IdUsuario = idUsuario };
                     string insertQuery = " UPDATE [Main].[MovimentacoesInvestimentos] " +
                                          " SET VoExcluido=1, DataAlteracao = Getdate(), Versao=Versao+1" +
-                                         $" WHERE Id = @Id AND VoExcluido=0 {clausulaAdicional}";
+                                         $" WHERE Id = @Id AND VoExcluido=0 AND IdUsuario = @IdUsuario";
 
                     var retorno = contexto.Execute(insertQuery, model);
 
@@ -369,6 +356,7 @@ namespace ApiFinancas.Controllers
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     string selectQuery = " SELECT " +
+                                         " [MovimentacoesInvestimentos].[Id],"+
                                          " [MovimentacoesInvestimentos].[Data]," +
                                          " [MovimentacoesInvestimentos].[Descritivo]," +
                                          " [MovimentacoesInvestimentos].[Valor]," +
@@ -377,7 +365,8 @@ namespace ApiFinancas.Controllers
                                          " FROM [Main].[MovimentacoesInvestimentos] WITH (NOLOCK) " +
                                          " JOIN [Main].[Investimentos] WITH (NOLOCK) ON (MovimentacoesInvestimentos.IdInvestimento = Investimentos.Id)" +
                                          " WHERE [MovimentacoesInvestimentos].[IdUsuario] = @IdUsuario " +
-                                         " And [MovimentacoesInvestimentos].[IdMeta] = @IdMeta" +
+                                         " And [MovimentacoesInvestimentos].[IdMeta] = @IdMeta " +
+                                         " And [MovimentacoesInvestimentos].[VoExcluido] = 0 "+
                                          " ORDER BY" +
                                          " Data";
 
@@ -439,6 +428,7 @@ namespace ApiFinancas.Controllers
                                          " JOIN [Main].[Investimentos] WITH (NOLOCK) ON (MovimentacoesInvestimentos.IdInvestimento = Investimentos.Id)" +
                                          " WHERE [MovimentacoesInvestimentos].[IdUsuario] = @IdUsuario " +
                                          " And [MovimentacoesInvestimentos].[IdMeta] = @IdMeta " +
+                                         " And [MovimentacoesInvestimentos].[VoExcluido] = 0 " +
                                          " GROUP BY " +
                                          " [MovimentacoesInvestimentos].[IdInvestimento]," +
                                          " [Investimentos].[Nome]" +
@@ -504,6 +494,7 @@ namespace ApiFinancas.Controllers
                                          " JOIN [Main].[Metas] WITH (NOLOCK) ON (MovimentacoesInvestimentos.IdMeta = Metas.Id)" +
                                          " WHERE [MovimentacoesInvestimentos].[IdUsuario] = @IdUsuario " +
                                          " And [MovimentacoesInvestimentos].[IdInvestimento] = @IdInvestimento" +
+                                         " And [MovimentacoesInvestimentos].[VoExcluido] = 0 " +
                                          " ORDER BY" +
                                          " Data";
 
@@ -566,6 +557,7 @@ namespace ApiFinancas.Controllers
                                          " JOIN [Main].[Metas] WITH (NOLOCK) ON (MovimentacoesInvestimentos.IdMeta = Metas.Id)" +
                                          " WHERE [MovimentacoesInvestimentos].[IdUsuario] = @IdUsuario " +
                                          " And [MovimentacoesInvestimentos].[IdInvestimento] = @IdInvestimento " +
+                                         " And [MovimentacoesInvestimentos].[VoExcluido] = 0 " +
                                          " GROUP BY " +
                                          " [MovimentacoesInvestimentos].[IdMeta]," +
                                          " [Metas].[Nome]" +

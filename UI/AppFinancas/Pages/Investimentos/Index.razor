@@ -89,13 +89,16 @@
         {
             <tr>
                 <td>@investimento.Nome</td>
-                <td>@investimento.Vencimento</td>
-                <td>@investimento.Categoria</td>
-                <td>@investimento.Risco</td>
+                <td>@investimento.Vencimento.ToStringNotNull()</td>
+                <td>@investimento.NomeCategoria</td>
+                <td>@investimento.NomeRisco</td>
                 <td>
                     <div align="center">
-                    <a class="btn btn-outline-secondary" href="investimento/extrato/@investimento.Id/@investimento.Nome">Extrato</a>
+                        <a href="/investimento/excluir/@investimento.Id/@investimento.Nome" class="btn btn-outline-secondary">Excluir</a>
+                        <a href="/investimento/alterar/@investimento.Id" class="btn btn-outline-secondary">Alterar</a>
+                        <a class="btn btn-outline-secondary" href="investimento/extrato/@investimento.Id/@investimento.Nome">Extrato</a>
                     <a class="btn btn-outline-secondary" href="investimento/posicao/@investimento.Id/@investimento.Nome">Posição</a>
+                        
                     </div>
                 </td>
             </tr>
@@ -104,7 +107,7 @@
 
 </table>
 
-<a href="/investimento/create" class="btn btn-primary">Novo investimento</a>
+<a href="/investimento/incluir" class="btn btn-primary">Criar investimento</a>
 <a href="/" class="btn btn-default">Voltar</a>
 
 <br />
@@ -121,12 +124,17 @@
     string mensagem = "Carregando lista de investimentos...";
     public List<InvestimentoModel> ListaInvestimentos { get; set; } = new();
 
+    
+
+
     protected override async Task OnInitializedAsync()
     {
         RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
         var x = UsuarioService.ObterToken(model);
         RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
         string token = "";
+
+      
 
         if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

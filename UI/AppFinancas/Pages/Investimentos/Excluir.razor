@@ -1,0 +1,61 @@
+﻿@page "/investimento/excluir/{id:int}/{nome}"
+@inject NavigationManager Navigation 
+@rendermode InteractiveServer 
+
+<PageTitle>Investimentos</PageTitle>
+
+<h1>Confirmação da exclusão</h1>
+<h4> Tem certeza de que deseja excluir o investimento <strong>@Nome</strong> e todas as suas movimentações?</h4>
+
+<button class="btn btn-danger" @onclick="ConfirmarExclusao">Excluir</button>
+<a onclick="history.back()" class="btn btn-default">Cancelar</a>
+
+<br />
+@if (mensagem != string.Empty)
+{
+    <label class="text text-danger">@mensagem</label>
+}
+
+@code {
+    public string mensagem { get; set; }
+
+    [Parameter]
+    public int Id { get; set; }
+
+    [Parameter]
+    public string Nome { get; set; }
+
+
+
+    public async Task ConfirmarExclusao()
+    {
+        mensagem = "";
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+        string token = "";
+
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            token = retornoService.Mensagem;
+            mensagem = "";
+        }
+
+
+        retornoService = await InvestimentoService.ExcluirInvestimento(token, Id);
+
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+
+        Navigation.NavigateTo("/investimento");
+    }
+}

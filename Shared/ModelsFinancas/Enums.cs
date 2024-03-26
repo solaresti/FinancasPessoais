@@ -21,4 +21,26 @@
         UsuarioComum = 1,
         UsuarioAdministrador = 99
     }
+
+    /// <summary>
+    /// Categoria de investimentos
+    /// </summary>
+    public enum CategoriaInvestimentoEnum
+    {
+        RendaFixa = 1,
+        RendaVariavel = 2,
+        Cambial = 3,
+        Criptomoedas = 4,
+        MultiMercados = 5
+    }
+
+    /// <summary>
+    /// Categoria de investimentos
+    /// </summary>
+    public enum RiscoInvestimentoEnum
+    {
+        Baixo = 1,
+        Médio = 2,
+        Alto = 3,
+    }
 }

@@ -291,7 +291,7 @@ namespace ApiFinancas.Controllers
                     }
                     else
                     {
-                        retornoModel.Mensagem = "Investimento exlcluído co sucesso.";
+                        retornoModel.Mensagem = "Investimento exlcluído com sucesso.";
                         retornoModel.Codigo = CodigosRetornoEnum.Sucesso;
                         return Ok(retornoModel);
                     }

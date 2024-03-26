@@ -66,3 +66,13 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.table_money {
+    text-align: right;
+}
+
+.table_total {
+    text-align: right;
+    font-weight: bold;
+}
+

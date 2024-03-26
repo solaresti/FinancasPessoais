@@ -6,6 +6,11 @@
     public class ExtratoModel 
     {
         /// <summary>
+        /// Id da movimentação
+        /// </summary>
+        public int Id { get; set; }
+
+        /// <summary>
         /// Obtém ou define o valor de uma movimentação de investimento.
         /// </summary>
         public float Valor { get; set; }

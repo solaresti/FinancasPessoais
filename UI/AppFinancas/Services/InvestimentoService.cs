@@ -59,5 +59,159 @@ namespace AppFinancas.Services
                 return retornoApi;
             }
         }
+
+        /// <summary>
+        /// Consome o serviço excluir um investimento
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns></returns>
+        public static async Task<RetornoBaseModel> ExcluirInvestimento(string token, int id)
+        {
+            RetornoBaseModel retornoApi = new RetornoBaseModel();
+            try
+            {
+
+                string mensagemErro = "";
+                // Consumir o serviço
+                string urlBaseServico = "https://localhost:7076";
+                var client = new RestClient(urlBaseServico);
+
+
+                var request = new RestRequest($"Investimento/v1/{id}", Method.Delete);
+                request.AddHeader("token", token);
+                RestResponse response = client.Execute(request);
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string mensagemErroApi = "";
+                    if (string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        retornoApi.Mensagem = $"Erro exclusão do investimento (1D59964B).";
+                        return retornoApi;
+                    }
+                    else
+                    {
+                        retornoApi = JsonConvert.DeserializeObject<RetornoBaseModel>(response.Content);
+                        return retornoApi;
+                    }
+
+                }
+
+                retornoApi = JsonConvert.DeserializeObject<RetornoBaseModel>(response.Content);
+                return retornoApi;
+            }
+            catch (Exception ex)
+            {
+                retornoApi.Mensagem = $"Erro na exclusão do investimento (705449C6): {ex.Message}";
+                return retornoApi;
+            }
+        }
+
+        /// <summary>
+        /// Consome o serviço excluir um investimento
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns></returns>
+        public static async Task<RetornoEntidadeModel<InvestimentoModel>> IncluirOuAlterarInvestimento(string token, InvestimentoModel model, bool flagInclusao)
+        {
+            RetornoEntidadeModel<InvestimentoModel> retornoApi = new RetornoEntidadeModel<InvestimentoModel>();
+            try
+            {
+
+                string mensagemErro = "";
+                // Consumir o serviço
+                string urlBaseServico = "https://localhost:7076";
+                var client = new RestClient(urlBaseServico);
+
+
+                RestRequest request;
+                if (flagInclusao)
+                {
+                    request  = new RestRequest($"Investimento/v1", Method.Post);
+                }
+                else
+                {
+                    request = new RestRequest($"Investimento/v1/{model.Id}", Method.Put);
+                }
+
+                request.AddHeader("token", token);
+                request.AddBody(model);
+                RestResponse response = client.Execute(request);
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string mensagemErroApi = "";
+                    if (string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        retornoApi.Mensagem = $"Erro inclusão/alteração do investimento (29F4B305).";
+                        return retornoApi;
+                    }
+                    else
+                    {
+                        retornoApi = JsonConvert.DeserializeObject<RetornoEntidadeModel<InvestimentoModel>>(response.Content);
+                        return retornoApi;
+                    }
+
+                }
+
+                retornoApi = JsonConvert.DeserializeObject<RetornoEntidadeModel<InvestimentoModel>>(response.Content);
+                return retornoApi;
+            }
+            catch (Exception ex)
+            {
+                retornoApi.Mensagem = $"Erro na inclusão/alteração do investimento (29C66F18): {ex.Message}";
+                return retornoApi;
+            }
+        }
+
+        /// <summary>
+        /// Consome o serviço excluir um investimento
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns></returns>
+        public static async Task<RetornoEntidadeModel<InvestimentoModel>> ObterInvestimento(string token, int id)
+        {
+            RetornoEntidadeModel<InvestimentoModel> retornoApi = new RetornoEntidadeModel<InvestimentoModel>();
+            try
+            {
+
+                string mensagemErro = "";
+                // Consumir o serviço
+                string urlBaseServico = "https://localhost:7076";
+                var client = new RestClient(urlBaseServico);
+
+
+                var request = new RestRequest($"Investimento/v1/{id}", Method.Get);
+                request.AddHeader("token", token);
+                RestResponse response = client.Execute(request);
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    string mensagemErroApi = "";
+                    if (string.IsNullOrWhiteSpace(response.Content))
+                    {
+                        retornoApi.Mensagem = $"Erro exclusão do investimento (71468907).";
+                        return retornoApi;
+                    }
+                    else
+                    {
+                        retornoApi = JsonConvert.DeserializeObject<RetornoEntidadeModel<InvestimentoModel>>(response.Content);
+                        return retornoApi;
+                    }
+
+                }
+
+                retornoApi = JsonConvert.DeserializeObject<RetornoEntidadeModel<InvestimentoModel>>(response.Content);
+                return retornoApi;
+            }
+            catch (Exception ex)
+            {
+                retornoApi.Mensagem = $"Erro na exclusão do investimento (827C6BC1): {ex.Message}";
+                return retornoApi;
+            }
+        }
     }
 }

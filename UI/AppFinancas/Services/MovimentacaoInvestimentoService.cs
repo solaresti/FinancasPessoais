@@ -17,7 +17,7 @@ namespace AppFinancas.Services
         /// </summary>
         /// <param name="loginModel"></param>
         /// <returns></returns>
-        public static async Task<RetornoListaEntidadesModel<ExtratoModel>> ObterExtratoPorMeta(string token, int id)
+        public static async Task<RetornoListaEntidadesModel<ExtratoModel>> ObterExtrato(string token, int id, bool flagMeta)
         {
             RetornoListaEntidadesModel<ExtratoModel> retornoApi = new RetornoListaEntidadesModel<ExtratoModel>();
             try
@@ -28,8 +28,16 @@ namespace AppFinancas.Services
                 string urlBaseServico = "https://localhost:7076";
                 var client = new RestClient(urlBaseServico);
 
-
-                var request = new RestRequest($"MovimentacaoInvestimento/v1/ExtratoMeta/{id}", Method.Get);
+                RestRequest request;
+                if (flagMeta)
+                {
+                    request = new RestRequest($"MovimentacaoInvestimento/v1/ExtratoMeta/{id}", Method.Get);
+                }
+                else
+                {
+                    request = new RestRequest($"MovimentacaoInvestimento/v1/ExtratoInvestimento/{id}", Method.Get);
+                }
+                
                 request.AddHeader("token", token);
                 RestResponse response = client.Execute(request);
 
@@ -60,55 +68,7 @@ namespace AppFinancas.Services
             }
         }
 
-        /// <summary>
-        /// Consome o serviço para obter a lista de investimentos
-        /// </summary>
-        /// <param name="loginModel"></param>
-        /// <returns></returns>
-        public static async Task<RetornoListaEntidadesModel<ExtratoModel>> ObterExtratoPorInvestimento(string token, int id)
-        {
-            RetornoListaEntidadesModel<ExtratoModel> retornoApi = new RetornoListaEntidadesModel<ExtratoModel>();
-            try
-            {
-
-                string mensagemErro = "";
-                // Consumir o serviço
-                string urlBaseServico = "https://localhost:7076";
-                var client = new RestClient(urlBaseServico);
-
-
-                var request = new RestRequest($"MovimentacaoInvestimento/v1/ExtratoInvestimento/{id}", Method.Get);
-                request.AddHeader("token", token);
-                RestResponse response = client.Execute(request);
-
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    string mensagemErroApi = "";
-                    if (string.IsNullOrWhiteSpace(response.Content))
-                    {
-                        retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (56F244CA).";
-                        return retornoApi;
-                    }
-                    else
-                    {
-                        retornoApi = JsonConvert.DeserializeObject<RetornoListaEntidadesModel<ExtratoModel>>(response.Content);
-                        return retornoApi;
-                    }
-
-                }
-
-                retornoApi = JsonConvert.DeserializeObject<RetornoListaEntidadesModel<ExtratoModel>>(response.Content);
-                return retornoApi;
-            }
-            catch (Exception ex)
-            {
-                retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (62D30312): {ex.Message}";
-                return retornoApi;
-            }
-        }
-
-        public static async Task<RetornoListaEntidadesModel<PosicaoModel>> ObterPosicaoDeInvestimentoPorMeta(string token, int id)
+        public static async Task<RetornoListaEntidadesModel<PosicaoModel>> ObterPosicao(string token, int id, bool flagMeta)
         {
             RetornoListaEntidadesModel<PosicaoModel> retornoApi = new RetornoListaEntidadesModel<PosicaoModel>();
             try
@@ -120,7 +80,15 @@ namespace AppFinancas.Services
                 var client = new RestClient(urlBaseServico);
 
 
-                var request = new RestRequest($"MovimentacaoInvestimento/v1/PosicaoInvestimento/{id}", Method.Get);
+                RestRequest request;
+                if (flagMeta)
+                {
+                    request = new RestRequest($"MovimentacaoInvestimento/v1/PosicaoMeta/{id}", Method.Get);
+                }
+                else
+                {
+                    request = new RestRequest($"MovimentacaoInvestimento/v1/PosicaoInvestimento/{id}", Method.Get);
+                }
                 request.AddHeader("token", token);
                 RestResponse response = client.Execute(request);
 
@@ -151,9 +119,15 @@ namespace AppFinancas.Services
             }
         }
 
-        public static async Task<RetornoListaEntidadesModel<PosicaoModel>> ObterPosicaoDeMetaPorInvestimento(string token, int id)
+
+        /// <summary>
+        /// Consome o serviço para obter a lista de metas
+        /// </summary>
+        /// <param name="loginModel"></param>
+        /// <returns></returns>
+        public static async Task<RetornoBaseModel> ExcluirMovimentacao(string token, int id)
         {
-            RetornoListaEntidadesModel<PosicaoModel> retornoApi = new RetornoListaEntidadesModel<PosicaoModel>();
+            RetornoBaseModel retornoApi = new RetornoBaseModel();
             try
             {
 
@@ -163,7 +137,7 @@ namespace AppFinancas.Services
                 var client = new RestClient(urlBaseServico);
 
 
-                var request = new RestRequest($"MovimentacaoInvestimento/v1/PosicaoMeta/{id}", Method.Get);
+                var request = new RestRequest($"MovimentacaoInvestimento/v1/{id}", Method.Delete);
                 request.AddHeader("token", token);
                 RestResponse response = client.Execute(request);
 
@@ -173,23 +147,23 @@ namespace AppFinancas.Services
                     string mensagemErroApi = "";
                     if (string.IsNullOrWhiteSpace(response.Content))
                     {
-                        retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (AFF1742F).";
+                        retornoApi.Mensagem = $"Erro exclusão da movimentação (C8430209).";
                         return retornoApi;
                     }
                     else
                     {
-                        retornoApi = JsonConvert.DeserializeObject<RetornoListaEntidadesModel<PosicaoModel>>(response.Content);
+                        retornoApi = JsonConvert.DeserializeObject<RetornoBaseModel>(response.Content);
                         return retornoApi;
                     }
 
                 }
 
-                retornoApi = JsonConvert.DeserializeObject<RetornoListaEntidadesModel<PosicaoModel>>(response.Content);
+                retornoApi = JsonConvert.DeserializeObject<RetornoBaseModel>(response.Content);
                 return retornoApi;
             }
             catch (Exception ex)
             {
-                retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (5EAF1235): {ex.Message}";
+                retornoApi.Mensagem = $"Erro na obtenção da lista de movimentações (96944458): {ex.Message}";
                 return retornoApi;
             }
         }

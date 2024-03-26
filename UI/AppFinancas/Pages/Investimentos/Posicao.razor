@@ -89,7 +89,7 @@
         @foreach (var movimentacao in ListaMovimentacoes)
         {
             <tr>
-                <td>@movimentacao.Nome</td>
+                <td><a href="meta/posicao/@movimentacao.IdMeta/@movimentacao.Nome">@movimentacao.Nome</a></td>
                 <td class="money">@movimentacao.Valor.ToString("C")</td>
             </tr>
         }
@@ -104,7 +104,7 @@
 </table>
 
 <a href="/movimentacao/create" class="btn btn-primary">Incluir lançamento</a>
-<a href="/investimento" class="btn btn-default">Voltar</a>
+<a onclick="history.back()" class="btn btn-default">Voltar</a>
 
 <br />
 
@@ -147,7 +147,7 @@
             mensagem = "";
         }
 
-        RetornoListaEntidadesModel<PosicaoModel> retornoApi = await MovimentacaoInvestimentoService.ObterPosicaoDeInvestimentoPorMeta(token, Id);
+        RetornoListaEntidadesModel<PosicaoModel> retornoApi = await MovimentacaoInvestimentoService.ObterPosicao(token, Id, flagMeta:false);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

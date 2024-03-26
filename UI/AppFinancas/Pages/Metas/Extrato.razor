@@ -7,8 +7,6 @@
 <h3>Extrato de <b>@NomeMeta</b></h3>
 
 <table class="table">
-
-
     <style type="text/css">
         body {
             font-family: Arial, Verdana, sans-serif;
@@ -67,15 +65,6 @@
         tr:hover {
             background-color: lightgray;
         }
-
-        .money {
-            text-align: right;
-        }
-
-        .total {
-            text-align: right;
-            font-weight: bold;
-        }
     </style>
 
 
@@ -83,7 +72,9 @@
         <tr class="head">
             <th>Data</th>
             <th>Investimento</th>
+            <th>Descritivo</th>
             <th>Valor</th>
+            <th>Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -92,15 +83,16 @@
             <tr>
                 <td>@movimentacao.Data.ToString("dd/MM/yyyy")</td>
                 <td>@movimentacao.Nome</td>
-                <td class="money">@movimentacao.Valor.ToString("C")</td>
+                <td>@movimentacao.Descritivo</td>
+                <td class="table_money">@movimentacao.Valor.ToString("C")</td>
+                <td><a href="/movimentacao/excluir/@movimentacao.Id/@movimentacao.Valor" class="btn btn-danger">Excluir</a></td>
             </tr>
         }
     </tbody>
     <tfoot>
         <tr>
             <th scope="row">Total</th>
-            <th></th>
-            <td class="total">@ValorTotal.ToString("C")</td>
+            <td class="table_total">@ValorTotal.ToString("C")</td>
         </tr>
     </tfoot>
 
@@ -150,7 +142,7 @@
             mensagem = "";
         }
 
-        RetornoListaEntidadesModel<ExtratoModel> retornoApi = await MovimentacaoInvestimentoService.ObterExtratoPorMeta(token, Id);
+        RetornoListaEntidadesModel<ExtratoModel> retornoApi = await MovimentacaoInvestimentoService.ObterExtrato(token, Id, flagMeta:true);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

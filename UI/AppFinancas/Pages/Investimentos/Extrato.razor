@@ -97,7 +97,6 @@
     <tfoot>
         <tr>
             <th scope="row">Total</th>
-            <th></th>
             <td class="total">@ValorTotal.ToString("C")</td>
         </tr>
     </tfoot>
@@ -148,7 +147,7 @@
             mensagem = "";
         }
 
-        RetornoListaEntidadesModel<ExtratoModel> retornoApi = await MovimentacaoInvestimentoService.ObterExtratoPorInvestimento(token, Id);
+        RetornoListaEntidadesModel<ExtratoModel> retornoApi = await MovimentacaoInvestimentoService.ObterExtrato(token, Id, flagMeta: false);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

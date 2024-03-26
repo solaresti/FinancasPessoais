@@ -104,7 +104,7 @@
 </table>
 
 <a href="/movimentacao/create" class="btn btn-primary">Incluir lançamento</a>
-<a href="/meta" class="btn btn-default">Voltar</a>
+<a onclick="history.back()" class="btn btn-default">Voltar</a>
 
 <br />
 
@@ -147,7 +147,7 @@
             mensagem = "";
         }
 
-        RetornoListaEntidadesModel<PosicaoModel> retornoApi = await MovimentacaoInvestimentoService.ObterPosicaoDeMetaPorInvestimento(token, Id);
+        RetornoListaEntidadesModel<PosicaoModel> retornoApi = await MovimentacaoInvestimentoService.ObterPosicao(token, Id, flagMeta:true);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
