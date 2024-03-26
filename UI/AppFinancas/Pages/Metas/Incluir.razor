@@ -1,0 +1,94 @@
+﻿@page "/meta/incluir"
+@using ApiFinancas.Models
+@using AppFinancas.Models
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Metas</PageTitle>
+
+<h2>Nova meta</h2>
+
+@if (mensagem != string.Empty)
+{
+    <label class="text text-danger">@mensagem</label>
+}
+
+
+
+<EditForm Model="@metaModel" OnValidSubmit="Gravar">
+    <DataAnnotationsValidator />
+    @* <ValidationSummary/> *@
+
+    <div class="mb-3">
+        <label class="form-label">Nome</label>
+        <InputText @bind-Value="metaModel.Nome" class="form-control"></InputText>
+        <ValidationMessage For="@(() => metaModel.Nome)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descrição</label>
+        <InputText @bind-Value="metaModel.Descritivo" class="form-control"></InputText>
+        <ValidationMessage For="@(() => metaModel.Descritivo)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Data</label>
+        <InputDate @bind-Value="metaModel.Data" class="form-control"></InputDate>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Valor</label>
+        <InputNumber @bind-Value="metaModel.Valor" class="form-control"></InputNumber>
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary">Gravar</button>
+    <a href="/investimento" class="btn btn-default">Cancelar</a>
+</EditForm>
+
+
+@code {
+    public MetaModel metaModel { get; set; } = new() { Data = DateTime.Today.AddYears(1) };
+    public string mensagem { get; set; }
+
+
+    public async Task Gravar()
+    {
+
+        mensagem = "";
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+        string token = "";
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            token = retornoService.Mensagem;
+            mensagem = "";
+        }
+
+        RetornoEntidadeModel<MetaModel> retornoInclusao = await MetaService.IncluirOuAlterarMeta(token, metaModel, flagInclusao: true);
+
+        if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+
+        Navigation.NavigateTo("/meta");
+
+    }
+
+    // private int currentCount = 0;
+
+    // private void IncrementCount()
+    // {
+    //     currentCount++;
+    // }
+}

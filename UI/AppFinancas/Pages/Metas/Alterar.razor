@@ -1,0 +1,142 @@
+﻿@page "/meta/alterar/{id:int}"
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Metas</PageTitle>
+
+<h2>Alterar meta</h2>
+
+@if (mensagem != string.Empty)
+{
+    <label class="text text-danger">@mensagem</label>
+}
+
+
+
+<EditForm Model="@metaModel" OnValidSubmit="Gravar">
+    <DataAnnotationsValidator />
+    @* <ValidationSummary/> *@
+
+    <div class="mb-3">
+        <label class="form-label">Nome</label>
+        <InputText @bind-Value="metaModel.Nome" class="form-control"></InputText>
+        <ValidationMessage For="@(() => metaModel.Nome)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descrição</label>
+        <InputText @bind-Value="metaModel.Descritivo" class="form-control"></InputText>
+        <ValidationMessage For="@(() => metaModel.Descritivo)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Data</label>
+        <InputDate @bind-Value="metaModel.Data" class="form-control"></InputDate>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Valor</label>
+        <InputNumber @bind-Value="metaModel.Valor" class="form-control"></InputNumber>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Gravar</button>
+    <a href="/investimento" class="btn btn-default">Cancelar</a>
+</EditForm>
+
+@* <p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
+
+@code {
+
+    /// <summary>
+    /// Meta que está sendo alterada
+    /// </summary>
+    public MetaModel metaModel { get; set; } = new();
+
+    /// <summary>
+    /// Id da investimento a ser alterada
+    /// </summary>
+    [Parameter]
+    public int Id { get; set; }
+
+    /// <summary>
+    /// Mensagem de erro a ser exibida na tela
+    /// </summary>
+    public string mensagem { get; set; } = "";
+
+
+    /// <summary>
+    /// Método que é disparado todas vez que a tela é carregada
+    /// </summary>
+    /// <returns></returns>
+    ///
+    protected override async Task OnInitializedAsync()
+    {
+  
+        mensagem = "";
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+        string token = "";
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            token = retornoService.Mensagem;
+            mensagem = "";
+        }
+
+        RetornoEntidadeModel<MetaModel> retornoApi = await MetaService.ObterMeta(token, Id);
+
+        if (retornoApi.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+
+        metaModel = retornoApi.Entidade;
+    }
+
+    public async Task Gravar()
+    {
+
+        mensagem = "";
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+        string token = "";
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            token = retornoService.Mensagem;
+            mensagem = "";
+        }
+
+        RetornoEntidadeModel<MetaModel> retornoInclusao = await MetaService.IncluirOuAlterarMeta(token, metaModel, flagInclusao:false);
+
+        if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+
+        Navigation.NavigateTo("/meta");
+
+    }
+
+    // private int currentCount = 0;
+
+    // private void IncrementCount()
+    // {
+    //     currentCount++;
+    // }
+}

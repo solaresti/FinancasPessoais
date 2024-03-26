@@ -193,7 +193,7 @@ namespace AppFinancas.Services
                     string mensagemErroApi = "";
                     if (string.IsNullOrWhiteSpace(response.Content))
                     {
-                        retornoApi.Mensagem = $"Erro exclusão do investimento (71468907).";
+                        retornoApi.Mensagem = $"Erro obtenção do investimento (71468907).";
                         return retornoApi;
                     }
                     else
@@ -209,7 +209,7 @@ namespace AppFinancas.Services
             }
             catch (Exception ex)
             {
-                retornoApi.Mensagem = $"Erro na exclusão do investimento (827C6BC1): {ex.Message}";
+                retornoApi.Mensagem = $"Erro na obtenção do investimento (827C6BC1): {ex.Message}";
                 return retornoApi;
             }
         }

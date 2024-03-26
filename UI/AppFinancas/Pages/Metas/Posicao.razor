@@ -89,7 +89,7 @@
         @foreach (var movimentacao in ListaMovimentacoes)
         {
             <tr>
-                <td>@movimentacao.Nome</td>
+                <td><a href="investimento/posicao/@movimentacao.IdInvestimento/@movimentacao.Nome">@movimentacao.Nome</a></td>
                 <td class="money">@movimentacao.Valor.ToString("C")</td>
             </tr>
         }

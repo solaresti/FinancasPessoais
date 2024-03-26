@@ -63,6 +63,7 @@ namespace ApiFinancas.Controllers
                     metaModel.DataAlteracao = metaModel.DataInclusao;
                     metaModel.Versao = 1;
                     metaModel.VoExcluido = false;
+                    metaModel.IdUsuario = idUsuario;
 
                     string insertQuery = " INSERT INTO Main.Metas (IdUsuario, Nome, Descritivo, Valor, Data, DataInclusao, DataAlteracao, Versao, VoExcluido) " +
                                          " VALUES  (@IdUsuario, @Nome, @Descritivo, @Valor, @Data, GETDATE(), GETDATE(), 1,0); " +
