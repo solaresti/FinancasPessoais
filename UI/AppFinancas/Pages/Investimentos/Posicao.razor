@@ -4,11 +4,78 @@
 
 <PageTitle>Investimento</PageTitle>
 
-<h1>Posição de: @NomeInvestimento</h1>
+<h2>Posição de <b>@NomeInvestimento</b></h2>
 
 <table class="table">
+
+    <style type="text/css">
+        body {
+            font-family: Arial, Verdana, sans-serif;
+            font-size: 90%;
+            color: #666;
+            background-color: #f8f8f8;
+        }
+
+        table {
+            border-spacing: 0px;
+        }
+
+        th, td {
+            padding: 5px 30px 5px 10px;
+            border-spacing: 0px;
+            font-size: 100%;
+            margin: 0px;
+        }
+
+        th, td {
+            text-align: left;
+            background-color: #e0e9f0;
+            border-top: 1px solid #f1f8fe;
+            border-bottom: 1px solid #cbd2d8;
+            border-right: 1px solid #cbd2d8;
+        }
+
+        tr.head th {
+            text-transform: uppercase;
+            font-size: 90%;
+            color: white;
+            background-color: gray;
+            border-bottom: 2px solid white;
+            border-right: 1px solid white;
+            border-top: 1px solid white;
+            text-align: left;
+            letter-spacing: 0.1em;
+        }
+
+            tr.head th:first-child {
+                -webkit-border-top-left-radius: 5px;
+                -moz-border-radius-topleft: 5px;
+                border-top-left-radius: 5px;
+            }
+
+            tr.head th:last-child {
+                -webkit-border-top-right-radius: 5px;
+                -moz-border-radius-topright: 5px;
+                border-top-right-radius: 5px;
+            }
+
+        tr.even {
+            background-color: #efefef;
+        }
+
+        tr:hover {
+            background-color: lightgray;
+        }
+
+        .money {
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+
+
     <thead>
-        <tr>
+        <tr class="head">
             <th>Meta</th>
             <th><div align="right">Valor</div></th>
         </tr>
@@ -18,15 +85,14 @@
         {
             <tr>
                 <td>@movimentacao.Nome</td>
-                <td align="right">@movimentacao.Valor.ToString("C")</td>
+                <td class="money">@movimentacao.Valor.ToString("C")</td>
             </tr>
         }
     </tbody>
     <tfoot>
         <tr>
             <th scope="row">Total</th>
-            <th></th>
-            <td><div align="right">@ValorTotal.ToString("C")</div></td>
+            <td class="money"> @ValorTotal.ToString("C")</td>
         </tr>
     </tfoot>
 
