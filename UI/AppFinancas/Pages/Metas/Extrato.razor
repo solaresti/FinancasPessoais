@@ -8,12 +8,6 @@
 
 <table class="table">
     <style type="text/css">
-        body {
-            font-family: Arial, Verdana, sans-serif;
-            font-size: 90%;
-            color: #666;
-            background-color: #f8f8f8;
-        }
 
         table {
             border-spacing: 0px;
@@ -65,6 +59,24 @@
         tr:hover {
             background-color: lightgray;
         }
+
+        .table_money {
+            text-align: right;
+        }
+
+        .table_total {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        tr.table_total {
+            background-color: lightgray;
+            font-weight: bold;
+        }
+
+        
+
+
     </style>
 
 
@@ -82,17 +94,20 @@
         {
             <tr>
                 <td>@movimentacao.Data.ToString("dd/MM/yyyy")</td>
-                <td>@movimentacao.Nome</td>
+                <td><a href="investimento/posicao/@movimentacao.IdInvestimento/@movimentacao.Nome">@movimentacao.Nome</a></td>
                 <td>@movimentacao.Descritivo</td>
                 <td class="table_money">@movimentacao.Valor.ToString("C")</td>
-                <td><a href="/movimentacao/excluir/@movimentacao.Id/@movimentacao.Valor" class="btn btn-danger">Excluir</a></td>
+                <td> <a href="/movimentacao/excluir/@movimentacao.Id/@movimentacao.Valor" class="btn btn-outline-danger">Excluir</a></td>
             </tr>
         }
     </tbody>
-    <tfoot>
-        <tr>
-            <th scope="row">Total</th>
+    <tfoot class="">
+        <tr class="table_total">
+            <th>Total</th>
+            <th></th>
+            <th></th>
             <td class="table_total">@ValorTotal.ToString("C")</td>
+            <th></th>
         </tr>
     </tfoot>
 

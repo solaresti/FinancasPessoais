@@ -9,12 +9,6 @@
 <table class="table">
 
     <style type="text/css">
-        body {
-            font-family: Arial, Verdana, sans-serif;
-            font-size: 90%;
-            color: #666;
-            background-color: #f8f8f8;
-        }
 
         table {
             border-spacing: 0px;
@@ -75,6 +69,12 @@
             text-align: right;
             font-weight: bold;
         }
+
+        tr.table_total {
+            background-color: lightgray;
+            font-weight: bold;
+        }
+
     </style>
 
     <thead>
@@ -89,14 +89,15 @@
         {
             <tr>
                 <td>@movimentacao.Data.ToString("dd/MM/yyyy")</td>
-                <td>@movimentacao.Nome</td>
+                <td><a href="meta/posicao/@movimentacao.IdMeta/@movimentacao.Nome">@movimentacao.Nome</a></td>
                 <td class="money">@movimentacao.Valor.ToString("C")</td>
             </tr>
         }
     </tbody>
     <tfoot>
-        <tr>
+        <tr class="table_total">
             <th scope="row">Total</th>
+            <td></td>
             <td class="total">@ValorTotal.ToString("C")</td>
         </tr>
     </tfoot>

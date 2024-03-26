@@ -4,18 +4,12 @@
 
 <PageTitle>Investimentos</PageTitle>
 
-<h2>Seus investimentos</h2>
+<h2>Meus investimentos</h2>
 
 <table class="table">
 
 
     <style type="text/css">
-        body {
-            font-family: Arial, Verdana, sans-serif;
-            font-size: 90%;
-            color: #666;
-            background-color: #f8f8f8;
-        }
 
         table {
             border-spacing: 0px;
@@ -94,11 +88,10 @@
                 <td>@investimento.NomeRisco</td>
                 <td>
                     <div align="center">
-                        <a href="/investimento/excluir/@investimento.Id/@investimento.Nome" class="btn btn-outline-secondary">Excluir</a>
                         <a href="/investimento/alterar/@investimento.Id" class="btn btn-outline-secondary">Alterar</a>
                         <a class="btn btn-outline-secondary" href="investimento/extrato/@investimento.Id/@investimento.Nome">Extrato</a>
-                    <a class="btn btn-outline-secondary" href="investimento/posicao/@investimento.Id/@investimento.Nome">Posição</a>
-                        
+                        <a class="btn btn-outline-secondary" href="investimento/posicao/@investimento.Id/@investimento.Nome">Posição</a>
+                        <a href="/investimento/excluir/@investimento.Id/@investimento.Nome" class="btn btn-outline-danger">Excluir</a>
                     </div>
                 </td>
             </tr>
