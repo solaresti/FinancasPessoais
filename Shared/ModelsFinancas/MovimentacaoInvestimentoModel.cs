@@ -10,7 +10,7 @@ namespace ApiFinancas.Models
         /// <summary>
         /// Obtém ou define o valor de uma movimentação de investimento.
         /// </summary>
-        [DeniedValues(0,ErrorMessage ="Não é possível incluir uma movimentação se valor")]
+        [DeniedValues(0,ErrorMessage ="Não é possível incluir um lançamento sem valor")]
         public float Valor { get; set; }
 
         /// <summary>

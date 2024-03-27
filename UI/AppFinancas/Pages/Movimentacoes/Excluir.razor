@@ -1,4 +1,4 @@
-﻿@page "/movimentacao/excluir/{id:int}/{valor:float}"
+﻿@page "/MovimentacaoInvestimento/excluir/{id:int}/{valor:float}"
 
 @inject NavigationManager Navigation 
 @rendermode InteractiveServer 
@@ -57,6 +57,6 @@
             return;
         }
 
-        Navigation.NavigateTo("/meta");
+        Navigation.NavigateTo("/MovimentacaoInvestimento");
     }
 }

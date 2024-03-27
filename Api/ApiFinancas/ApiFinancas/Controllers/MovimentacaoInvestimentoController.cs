@@ -146,6 +146,7 @@ namespace ApiFinancas.Controllers
                     string insertQuery = "UPDATE [Main].[MovimentacoesInvestimentos] " +
                                         " SET [Valor] = @Valor, " +
                                         " [Data] = @Data, " +
+                                        " [Descritivo] = @Descritivo, " +
                                         " [IdMeta] = @IdMeta, " +
                                         " [IdInvestimento] = @IdInvestimento, " +
                                         " [DataAlteracao] = GETDATE()," +

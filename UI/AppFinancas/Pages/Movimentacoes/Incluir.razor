@@ -1,0 +1,101 @@
+﻿@page "/MovimentacaoInvestimento/incluir"
+@using ApiFinancas.Models
+@using AppFinancas.Models
+@inject NavigationManager Navigation
+
+@rendermode InteractiveServer
+
+<PageTitle>Lançamentos</PageTitle>
+
+<h2>Novo lançamento</h2>
+
+@if (mensagem != string.Empty)
+{
+    <label class="text text-danger">@mensagem</label>
+}
+
+
+
+<EditForm Model="@lancamentoModel" OnValidSubmit="Gravar">
+    <DataAnnotationsValidator />
+    @* <ValidationSummary/> *@
+
+
+    <div class="mb-3">
+        <label class="form-label">Valor</label>
+        <InputNumber @bind-Value="lancamentoModel.Valor" class="form-control"></InputNumber>
+        <ValidationMessage For="@(() => lancamentoModel.Valor)" />
+
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Investimento</label>
+        <InputNumber @bind-Value="lancamentoModel.IdInvestimento" class="form-control"></InputNumber>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Meta</label>
+        <InputNumber @bind-Value="lancamentoModel.IdMeta" class="form-control"></InputNumber>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descrição</label>
+        <InputText @bind-Value="lancamentoModel.Descritivo" class="form-control"></InputText>
+        <ValidationMessage For="@(() => lancamentoModel.Descritivo)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Data</label>
+        <InputDate @bind-Value="lancamentoModel.Data" class="form-control"></InputDate>
+    </div>
+
+
+
+
+    <button type="submit" class="btn btn-primary">Gravar</button>
+    <a href="/MovimentacaoInvestimento" class="btn btn-default">Cancelar</a>
+</EditForm>
+
+
+@code {
+    public MovimentacaoInvestimentoModel lancamentoModel { get; set; } = new() { Data = DateTime.Today };
+    public string mensagem { get; set; }
+
+
+    public async Task Gravar()
+    {
+
+        mensagem = "";
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+        string token = "";
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            token = retornoService.Mensagem;
+            mensagem = "";
+        }
+
+        RetornoEntidadeModel<MovimentacaoInvestimentoModel> retornoInclusao = await MovimentacaoInvestimentoService.IncluirOuAlterarLancamento(token, lancamentoModel, flagInclusao: true);
+
+        if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+
+        Navigation.NavigateTo("/MovimentacaoInvestimento");
+
+    }
+
+    // private int currentCount = 0;
+
+    // private void IncrementCount()
+    // {
+    //     currentCount++;
+    // }
+}

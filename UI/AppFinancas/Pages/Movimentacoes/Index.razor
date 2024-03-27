@@ -1,0 +1,159 @@
+﻿@page "/MovimentacaoInvestimento"
+@using AppFinancas.Models
+@rendermode InteractiveServer
+
+<PageTitle>Lançamentos</PageTitle>
+
+<h2>Seus lançamentos</h2>
+
+
+
+
+<table class="table">
+
+
+    <style type="text/css">
+
+        table {
+            border-spacing: 0px;
+        }
+
+        th, td {
+            padding: 5px 30px 5px 10px;
+            border-spacing: 0px;
+            font-size: 100%;
+            margin: 0px;
+        }
+
+        th, td {
+            text-align: left;
+            background-color: #e0e9f0;
+            border-top: 1px solid #f1f8fe;
+            border-bottom: 1px solid #cbd2d8;
+            border-right: 1px solid #cbd2d8;
+        }
+
+        tr.head th {
+            text-transform: uppercase;
+            font-size: 90%;
+            color: white;
+            background-color: gray;
+            border-bottom: 2px solid white;
+            border-right: 1px solid white;
+            border-top: 1px solid white;
+            text-align: left;
+            letter-spacing: 0.1em;
+        }
+
+        tr.head th:first-child {
+            -webkit-border-top-left-radius: 5px;
+            -moz-border-radius-topleft: 5px;
+            border-top-left-radius: 5px;
+        }
+
+        tr.head th:last-child {
+            -webkit-border-top-right-radius: 5px;
+            -moz-border-radius-topright: 5px;
+            border-top-right-radius: 5px;
+        }
+        
+        tr.even {
+            background-color: #efefef;
+        }
+
+        tr:hover {
+            background-color: lightgray;
+        }
+
+        .table_money {
+            text-align: right;
+            font-weight: bold;
+        }
+        
+    </style>
+
+
+    <thead>
+        <tr class="head">
+            <th class="money">Valor</th>
+            <th>Data de inclusão</th>
+            <th>Meta</th>
+            <th>Investimento</th>
+            <th>Descrição</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var lancamento in ListaLancamentos)
+        {
+            <tr>
+                <td class="table_money">@lancamento.Valor.ToString("C")</td>
+                <td>@lancamento.DataInclusao.ToString("dd/MM/yyyy")</td>
+                <td>@lancamento.IdMeta</td>
+                <td>@lancamento.IdInvestimento</td>
+                <td>@lancamento.Descritivo</td>
+                <td>
+                    <div align="center">
+                        <a class="btn btn-outline-secondary" href="MovimentacaoInvestimento/alterar/@lancamento.Id/@lancamento.Valor">Alterar</a>
+                        <a class="btn btn-outline-danger" href="MovimentacaoInvestimento/excluir/@lancamento.Id/@lancamento.Valor">Excluir</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+
+</table>
+
+<a href="/MovimentacaoInvestimento/incluir" class="btn btn-primary">Criar lançamento</a>
+<a href="/" class="btn btn-default">Voltar</a>
+
+<br />
+
+@if (mensagem != string.Empty)
+{
+    <label class="text text-info">@mensagem</label>
+}
+@* <p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
+
+@code {
+    string mensagem = "Carregando lista de metas...";
+    public List<MovimentacaoInvestimentoModel> ListaLancamentos { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+        string token = "";
+
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            token = retornoService.Mensagem;
+            mensagem = "";
+        }
+
+        RetornoListaEntidadesModel<MovimentacaoInvestimentoModel> retornoApi = await MovimentacaoInvestimentoService.ObterListaLancamentos(token);
+
+        if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            ListaLancamentos = retornoApi.ListaEntidades;
+        }
+
+    }
+
+    private void Teste()
+    {
+
+        // adsfjsdklfjksdl
+    }
+}
