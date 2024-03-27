@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ApiFinancas.Models
 {
@@ -34,6 +36,18 @@ namespace ApiFinancas.Models
         [Required (ErrorMessage ="O descritivo é obrigatório")]
         [MinLength(3, ErrorMessage ="O descritivo precisa ter, pelo menos, 3 caracteres")]
         public string Descritivo { get; set; }
+
+        /// <summary>
+        /// Nome do investimento associado ao lançamento
+        /// </summary>
+        [NotMapped]
+        public string? NomeInvestimento { get; set; } 
+
+        /// <summary>
+        /// Nome da meta associado ao lançamento
+        /// </summary>
+        [NotMapped]
+        public string? NomeMeta { get; set; } 
 
     }
     

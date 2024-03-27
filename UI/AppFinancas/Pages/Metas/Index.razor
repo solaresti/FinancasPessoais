@@ -10,8 +10,6 @@
 
 
 <table class="table">
-
-
     <style type="text/css">
 
         table {
@@ -41,7 +39,6 @@
             border-bottom: 2px solid white;
             border-right: 1px solid white;
             border-top: 1px solid white;
-            text-align: left;
             letter-spacing: 0.1em;
         }
 
@@ -68,7 +65,6 @@
         .money {
             text-align: right;
         }
-        
     </style>
 
 
@@ -76,8 +72,10 @@
         <tr class="head">
             <th>Meta</th>
             <th>Data</th>
-            <th class="money">Valor</th>
-            <th></th>
+            <th class="table-money">Valor</th>
+            <th class="table-money">Já tenho</th>
+            <th class="table-money">Faltam</th>
+            <th text-align="center">Ações</th>
         </tr>
     </thead>
 
@@ -87,7 +85,9 @@
             <tr>
                 <td>@meta.Nome</td>
                 <td>@meta.Data.ToString("dd/MM/yyyy")</td>
-                <td class="money">@meta.Valor.ToString("C")</td>
+                <td class="table-money">@meta.Valor.ToString("C")</td>
+                <td class="table-money">@meta.ValorJaTenho.Value.ToString("C")</td>
+                <td class="table-money">@meta.QuantoFalta.ToString("C")</td>
                 <td>
                     <div align="center">
                     <a class="btn btn-outline-secondary" href="meta/extrato/@meta.Id/@meta.Nome">Extrato</a>
@@ -139,7 +139,7 @@
             mensagem = "";
         }
 
-        RetornoListaEntidadesModel<MetaModel> retornoApi = await MetaService.ObterListaMetas(token);
+        RetornoListaEntidadesModel<MetaModel> retornoApi = await MetaService.ObterLista(token);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
@@ -148,9 +148,5 @@
 
     }
 
-    private void Teste()
-    {
-
-        // adsfjsdklfjksdl
-    }
+  
 }

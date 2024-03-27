@@ -17,7 +17,7 @@ namespace AppFinancas.Services
         /// </summary>
         /// <param name="loginModel"></param>
         /// <returns></returns>
-        public static async Task<RetornoListaEntidadesModel<MetaModel>> ObterListaMetas(string token)
+        public static async Task<RetornoListaEntidadesModel<MetaModel>> ObterLista(string token)
         {
             RetornoListaEntidadesModel<MetaModel> retornoApi = new RetornoListaEntidadesModel<MetaModel>();
             try

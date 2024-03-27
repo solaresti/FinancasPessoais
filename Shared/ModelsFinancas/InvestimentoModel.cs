@@ -100,6 +100,11 @@ namespace ApiFinancas.Models
             }
         }
 
+        /// <summary>
+        /// Saldo atual do investimento
+        /// </summary>
+        public float? Valor { get; set; }
+
     }
 }
 

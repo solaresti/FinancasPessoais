@@ -126,7 +126,7 @@
 
         if (retornoApi.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
-            mensagem = retornoService.Mensagem;
+            mensagem = retornoApi.Mensagem;
             return;
         }
 
@@ -156,7 +156,7 @@
 
         if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
-            mensagem = retornoService.Mensagem;
+            mensagem = retornoInclusao.Mensagem;
             return;
         }
 

@@ -2,6 +2,7 @@
 @using ApiFinancas.Models
 @using AppFinancas.Models
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 
 @rendermode InteractiveServer
 
@@ -29,12 +30,26 @@
     </div>
     <div class="mb-3">
         <label class="form-label">Investimento</label>
-        <InputNumber @bind-Value="lancamentoModel.IdInvestimento" class="form-control"></InputNumber>
+        <InputSelect @bind-Value="lancamentoModel.IdInvestimento" class="form-control">
+            @foreach (var investimento in ListaInvestimentos)
+            {
+                <option value="@investimento.Id">
+                    @investimento.Nome
+                </option>
+            }
+        </InputSelect>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Meta</label>
-        <InputNumber @bind-Value="lancamentoModel.IdMeta" class="form-control"></InputNumber>
+        <InputSelect @bind-Value="lancamentoModel.IdMeta" class="form-control">
+            @foreach (var meta in ListaMetas)
+            {
+                <option value="@meta.Id">
+                    @meta.Nome
+                </option>
+            }
+        </InputSelect>
     </div>
 
     <div class="mb-3">
@@ -52,14 +67,78 @@
 
 
     <button type="submit" class="btn btn-primary">Gravar</button>
-    <a href="/MovimentacaoInvestimento" class="btn btn-default">Cancelar</a>
+    <a onclick="history.back()" class="btn btn-default">Cancelar</a>
 </EditForm>
 
 
 @code {
+
+    /// <summary>
+    /// Movimentação que está sendo incluída
+    /// </summary>
     public MovimentacaoInvestimentoModel lancamentoModel { get; set; } = new() { Data = DateTime.Today };
+
+    /// <summary>
+    /// Lista de investimentos disponíveis
+    /// </summary>
+    public List<InvestimentoModel> ListaInvestimentos = new();
+
+    /// <summary>
+    /// Lista de metas disponíveis
+    /// </summary>
+    public List<MetaModel> ListaMetas = new();
+
+    /// <summary>
+    /// Mensagem de erro a ser exibida para o usuário, se necessário
+    /// </summary>
     public string mensagem { get; set; }
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+        string token = "";
+
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            mensagem = retornoService.Mensagem;
+            return;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            token = retornoService.Mensagem;
+            mensagem = "";
+        }
+
+        // Obtendo a lista de metas
+        RetornoListaEntidadesModel<MetaModel> retornoApiMetas = await MetaService.ObterLista(token);
+
+        if (retornoApiMetas.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            ListaMetas = retornoApiMetas.ListaEntidades;
+        }
+        else
+        {
+            mensagem = retornoApiMetas.Mensagem;
+            return;
+        }
+
+        // Obtendo a lista de investimentos
+        RetornoListaEntidadesModel<InvestimentoModel> retornoApiInvestimentos = await InvestimentoService.ObterLista(token);
+        if (retornoApiInvestimentos.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            ListaInvestimentos = retornoApiInvestimentos.ListaEntidades;
+        }
+        else
+        {
+            mensagem = retornoApiInvestimentos.Mensagem;
+            return;
+        }
+
+    }
 
     public async Task Gravar()
     {
@@ -72,6 +151,7 @@
         if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
             mensagem = retornoService.Mensagem;
+            return;
         }
         else
         {
@@ -80,16 +160,26 @@
             mensagem = "";
         }
 
+
+        // Gravando as alterações
         RetornoEntidadeModel<MovimentacaoInvestimentoModel> retornoInclusao = await MovimentacaoInvestimentoService.IncluirOuAlterarLancamento(token, lancamentoModel, flagInclusao: true);
 
         if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
-            mensagem = retornoService.Mensagem;
+            mensagem = retornoInclusao.Mensagem;
             return;
         }
 
-        Navigation.NavigateTo("/MovimentacaoInvestimento");
+        // Navigation.NavigateTo("/MovimentacaoInvestimento");
 
+        await GoBack();
+
+    }
+
+    // Go back in browser using Javascript on a Razor Page
+    private async Task GoBack()
+    {
+        await JSRuntime.InvokeVoidAsync("history.back");
     }
 
     // private int currentCount = 0;

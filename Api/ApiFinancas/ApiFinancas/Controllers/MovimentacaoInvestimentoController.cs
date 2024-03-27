@@ -63,10 +63,10 @@ namespace ApiFinancas.Controllers
                 retornoModel.Mensagem = $"Você não pode lançar uma movimentação futura. (0B9D4CC2)";
                 return StatusCode(400, retornoModel);
             }
-            else if (movimentacaoModel.Data < DateTime.Today.AddDays(-730))
+            else if (movimentacaoModel.Data < DateTime.Today.AddYears(-5))
             {
                 retornoModel.Codigo = CodigosRetornoEnum.DadosInvalidos;
-                retornoModel.Mensagem = $"Você não pode lançar uma movimentação anterior a {DateTime.Today.AddDays(-730).ToString("dd/MM/yyyy")} .";
+                retornoModel.Mensagem = $"Você não pode lançar uma movimentação anterior a {DateTime.Today.AddYears(-5).ToString("dd/MM/yyyy")} .";
                 return StatusCode(400, retornoModel);
             }
  
@@ -251,7 +251,15 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    string selectQuery = $" Select * FROM [Main].[MovimentacoesInvestimentos] WHERE VoExcluido=0 AND IdUsuario = @IdUsuario ORDER BY Data";
+                    string selectQuery = " Select " +
+                                         " MovimentacoesInvestimentos.*, Metas.Nome AS NomeMeta, Investimentos.Nome AS NomeInvestimento" +
+                                         " FROM [Main].[MovimentacoesInvestimentos] WITH (NOLOCK) " +
+                                         " LEFT JOIN [Main].[Investimentos] WITH (NOLOCK) ON (MovimentacoesInvestimentos.IdInvestimento = Investimentos.Id And Investimentos.VoExcluido=0)" +
+                                         " LEFT JOIN [Main].[Metas] WITH (NOLOCK) ON (MovimentacoesInvestimentos.IdMeta = Metas.Id And Metas.VoExcluido=0)" +
+                                         " WHERE " +
+                                         " MovimentacoesInvestimentos.VoExcluido=0 " +
+                                         " AND MovimentacoesInvestimentos.IdUsuario = @IdUsuario " +
+                                         " ORDER BY Data";
 
                     var model = new { idUsuario = idUsuario };
                     var retornoBd = contexto.Query<MovimentacaoInvestimentoModel>(selectQuery, model).ToList();

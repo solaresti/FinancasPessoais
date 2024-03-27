@@ -17,7 +17,7 @@ namespace AppFinancas.Services
         /// </summary>
         /// <param name="loginModel"></param>
         /// <returns></returns>
-        public static async Task<RetornoListaEntidadesModel<InvestimentoModel>> ObterListaInvestimentos(string token)
+        public static async Task<RetornoListaEntidadesModel<InvestimentoModel>> ObterLista(string token)
         {
             RetornoListaEntidadesModel<InvestimentoModel> retornoApi = new RetornoListaEntidadesModel<InvestimentoModel>();
             try

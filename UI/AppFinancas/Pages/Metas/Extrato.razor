@@ -60,7 +60,7 @@
             background-color: lightgray;
         }
 
-        .table_money {
+        .table-money {
             text-align: right;
         }
 
@@ -73,10 +73,6 @@
             background-color: lightgray;
             font-weight: bold;
         }
-
-        
-
-
     </style>
 
 
@@ -96,7 +92,7 @@
                 <td>@movimentacao.Data.ToString("dd/MM/yyyy")</td>
                 <td><a href="investimento/posicao/@movimentacao.IdInvestimento/@movimentacao.Nome">@movimentacao.Nome</a></td>
                 <td>@movimentacao.Descritivo</td>
-                <td class="table_money">@movimentacao.Valor.ToString("C")</td>
+                <td class="table-money">@movimentacao.Valor.ToString("C")</td>
                 <td> <a href="/movimentacao/excluir/@movimentacao.Id/@movimentacao.Valor" class="btn btn-outline-danger">Excluir</a></td>
             </tr>
         }
@@ -113,7 +109,7 @@
 
 </table>
 
-<a href="/movimentacao/create" class="btn btn-primary">Incluir lançamento</a>
+<a href="/movimentacaoInvestimento/incluir" class="btn btn-primary">Incluir lançamento</a>
 <a href="/meta" class="btn btn-default">Voltar</a>
 
 <br />

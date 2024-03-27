@@ -45,7 +45,7 @@
 
 
     <button type="submit" class="btn btn-primary">Gravar</button>
-    <a href="/investimento" class="btn btn-default">Cancelar</a>
+    <a href="/meta" class="btn btn-default">Cancelar</a>
 </EditForm>
 
 
@@ -77,7 +77,7 @@
 
         if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
-            mensagem = retornoService.Mensagem;
+            mensagem = retornoInclusao.Mensagem;
             return;
         }
 

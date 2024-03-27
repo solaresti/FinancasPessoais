@@ -207,9 +207,9 @@ namespace ApiFinancas.Controllers
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     string insertQuery = " Select Id, TipoConta FROM [Controle].[Usuarios] " +
-                                         " WHERE VoExcluido=0 AND Login = @Morango AND Senha = @Banana";
+                                         " WHERE VoExcluido=0 AND Login = @Login AND Senha = @Senha";
 
-                    var modeloLogin = new { Morango = login, Banana = senha };
+                    var modeloLogin = new { Login = login, Senha = senha };
                     var retornoBd = contexto.Query<UsuarioModel>(insertQuery, modeloLogin).FirstOrDefault();
 
                     if (retornoBd == null)

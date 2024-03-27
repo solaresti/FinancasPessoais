@@ -219,10 +219,21 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    string insertQuery = $" Select * FROM [Main].[Investimentos] WHERE VoExcluido=0 {clausulaExtra} ORDER BY Nome ";
+                    string selectQuery = " SELECT " +
+                                         "     Investimentos.Id, Investimentos.Nome, ROUND(SUM(ISNULL(MovimentacoesInvestimentos.Valor,0)),2) AS Valor" +
+                                         " FROM " +
+                                         "    [Main].[Investimentos] WITH (NOLOCK)" +
+                                         "    LEFT JOIN [Main].[MovimentacoesInvestimentos] WITH (NOLOCK) ON (Investimentos.Id = MovimentacoesInvestimentos.IdInvestimento AND MovimentacoesInvestimentos.VoExcluido = 0)" +
+                                         " WHERE " +
+                                         "    Investimentos.VoExcluido=0 AND Investimentos.IdUsuario = @IdUsuario " +
+                                         " GROUP BY" +
+                                         "    Investimentos.Id, Investimentos.Nome" +
+                                         " ORDER BY " +
+                                         "    Nome";
 
-                    var model = new { idUsuario = idUsuario };
-                    var retornoBd = contexto.Query<InvestimentoModel>(insertQuery, model).ToList();
+
+                    var model = new { IdUsuario = idUsuario };
+                    var retornoBd = contexto.Query<InvestimentoModel>(selectQuery, model).ToList();
 
                     if (retornoBd == null)
                     {

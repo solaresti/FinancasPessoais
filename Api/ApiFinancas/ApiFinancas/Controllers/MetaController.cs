@@ -220,9 +220,19 @@ namespace ApiFinancas.Controllers
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
-                    string selectQuery = $" Select * FROM [Main].[Metas] WHERE VoExcluido=0 AND IdUsuario = @IdUsuario ORDER BY Nome";
+                    string selectQuery = " SELECT " +
+                                         "     Metas.Id, Metas.Nome, Metas.Data, Metas.Valor,ROUND(SUM(ISNULL(MovimentacoesInvestimentos.Valor,0)),2) AS ValorJaTenho" +
+                                         " FROM " +
+                                         "    [Main].[Metas] WITH (NOLOCK)" +
+                                         "    LEFT JOIN [Main].[MovimentacoesInvestimentos] WITH (NOLOCK) ON (Metas.Id = MovimentacoesInvestimentos.IdMeta AND MovimentacoesInvestimentos.VoExcluido = 0)" +
+                                         " WHERE " +
+                                         "    Metas.VoExcluido=0 AND Metas.IdUsuario = @IdUsuario " +
+                                         " GROUP BY" +
+                                         "    Metas.Id, Metas.Nome, Metas.Data, Metas.Valor " +
+                                         " ORDER BY " +
+                                         "    Nome";
 
-                    var model = new { idUsuario = idUsuario };
+                    var model = new { IdUsuario = idUsuario };
                     var retornoBd = contexto.Query<MetaModel>(selectQuery, model).ToList();
 
                     if (retornoBd == null)

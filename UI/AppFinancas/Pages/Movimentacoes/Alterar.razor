@@ -25,14 +25,29 @@
         <label class="form-label">Valor</label>
         <InputNumber @bind-Value="lancamentoModel.Valor" class="form-control"></InputNumber>
     </div>
+
     <div class="mb-3">
         <label class="form-label">Investimento</label>
-        <InputNumber @bind-Value="lancamentoModel.IdInvestimento" class="form-control"></InputNumber>
+        <InputSelect @bind-Value="lancamentoModel.IdInvestimento" class="form-control">
+            @foreach (var investimento in ListaInvestimentos)
+            {
+                <option value="@investimento.Id">
+                    @investimento.Nome
+                </option>
+            }
+        </InputSelect>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Meta</label>
-        <InputNumber @bind-Value="lancamentoModel.IdMeta" class="form-control"></InputNumber>
+        <InputSelect @bind-Value="lancamentoModel.IdMeta" class="form-control">
+            @foreach (var meta in ListaMetas)
+            {
+                <option value="@meta.Id">
+                    @meta.Nome
+                </option>
+            }
+        </InputSelect>
     </div>
 
     <div class="mb-3">
@@ -49,12 +64,29 @@
 
 
     <button type="submit" class="btn btn-primary">Gravar</button>
-    <a href="/MovimentacaoInvestimento" class="btn btn-default">Cancelar</a>
+    <a onclick="history.back()" class="btn btn-default">Cancelar</a>
 </EditForm>
 
 
 @code {
-    public MovimentacaoInvestimentoModel lancamentoModel { get; set; } = new() { Data = DateTime.Today };
+    /// <summary>
+    /// Movimentação que está sendo incluída
+    /// </summary>
+    public MovimentacaoInvestimentoModel lancamentoModel { get; set; }
+
+    /// <summary>
+    /// Lista de investimentos disponíveis
+    /// </summary>
+    public List<InvestimentoModel> ListaInvestimentos = new();
+
+    /// <summary>
+    /// Lista de metas disponíveis
+    /// </summary>
+    public List<MetaModel> ListaMetas = new();
+
+    /// <summary>
+    /// Mensagem de erro a ser exibida para o usuário, se necessário
+    /// </summary>
     public string mensagem { get; set; }
 
     [Parameter]
@@ -82,11 +114,37 @@
             mensagem = "";
         }
 
+         // Obtendo a lista de metas
+        RetornoListaEntidadesModel<MetaModel> retornoApiMetas = await MetaService.ObterLista(token);
+
+        if (retornoApiMetas.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            ListaMetas = retornoApiMetas.ListaEntidades;
+        }
+        else
+        {
+            mensagem = retornoApiMetas.Mensagem;
+            return;
+        }
+
+        // Obtendo a lista de investimentos
+        RetornoListaEntidadesModel<InvestimentoModel> retornoApiInvestimentos = await InvestimentoService.ObterLista(token);
+        if (retornoApiInvestimentos.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            ListaInvestimentos = retornoApiInvestimentos.ListaEntidades;
+        }
+        else
+        {
+            mensagem = retornoApiInvestimentos.Mensagem;
+            return;
+        }
+
+        // Obtem o lançamento
         RetornoEntidadeModel<MovimentacaoInvestimentoModel> retornoApi = await MovimentacaoInvestimentoService.ObterLancamento(token, Id);
 
         if (retornoApi.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
-            mensagem = retornoService.Mensagem;
+            mensagem = retornoApi.Mensagem;
             return;
         }
 
@@ -117,7 +175,7 @@
 
         if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
-            mensagem = retornoService.Mensagem;
+            mensagem = retornoInclusao.Mensagem;
             return;
         }
 
