@@ -19,7 +19,7 @@ namespace AppFinancas.Services
             RetornoBaseModel retornoLogin = new RetornoBaseModel();
             string mensagemErro = "";
             // Consumir o serviço
-            string urlBaseServico = "https://localhost:7076";
+            string urlBaseServico = System.Environment.GetEnvironmentVariable("UrlApiFutturo");
             var client = new RestClient(urlBaseServico);
 
             var request = new RestRequest($"Usuario/v1/ObterToken", Method.Get);

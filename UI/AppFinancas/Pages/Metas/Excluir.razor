@@ -1,6 +1,8 @@
 ﻿@page "/meta/excluir/{id:int}/{nome}"
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navigationManager
 
 <PageTitle>Metas</PageTitle>
 
@@ -17,6 +19,11 @@
 }
 
 @code {
+    /// <summary>
+    /// Dados da seção do usuário
+    /// </summary>
+    SessionModel sessionModel = new SessionModel();
+
     public string mensagem { get; set; }
 
     [Parameter]
@@ -30,25 +37,26 @@
     public async Task ConfirmarExclusao()
     {
         mensagem = "";
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        // ---------------------------------------------------------------------------------------
+        // Verificando se o login já foi efetuado
+        var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        if (conteudoSessionStorage.Value == null)
         {
-            mensagem = retornoService.Mensagem;
-            return;
+            sessionModel = new SessionModel();
         }
         else
         {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
+            sessionModel = conteudoSessionStorage.Value;
         }
 
+        if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        {
+            navigationManager.NavigateTo("/", true);
+        }
+        // ---------------------------------------------------------------------------------------
 
-        retornoService = await MetaService.ExcluirMeta(token, Id);
+
+        var retornoService = await MetaService.ExcluirMeta(sessionModel.Token, Id);
 
         if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

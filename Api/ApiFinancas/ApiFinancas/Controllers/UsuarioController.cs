@@ -64,6 +64,12 @@ namespace ApiFinancas.Controllers
                     usuarioModel.Versao = 1;
                     usuarioModel.VoExcluido = false;
 
+                    // Preparando o Hash da senha
+                    string keyHash256 = Environment.GetEnvironmentVariable("KeyFutturoHash256");
+                    string semente = Environment.GetEnvironmentVariable("KeyFutturoHash256");
+                    string hashSenha = CriptografiaService.CalcularHashSHA256(keyHash256, usuarioModel.Senha + semente);
+                    usuarioModel.Senha = hashSenha;
+
                     string insertQuery = " INSERT INTO Controle.Usuarios (DataInclusao, DataAlteracao, Versao, VoExcluido, Login, Celular, Senha, PrimeiroNome, IdUsuarioPai, Status, ConvitesAtivos, CodigoAlteracaoSenha, TipoConta) " +
                                          " VALUES  (@DataInclusao, @DataAlteracao, @Versao, @VoExcluido, @Login, @Celular, @Senha, @PrimeiroNome, @IdUsuarioPai, @Status, @ConvitesAtivos, @CodigoAlteracaoSenha, @TipoConta); " +
                                          " SELECT CAST(SCOPE_IDENTITY() as int);";
@@ -206,6 +212,14 @@ namespace ApiFinancas.Controllers
             {
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
+
+                    // Calcular o hash da senha passada pelo usuário
+                    string keyHash256 = Environment.GetEnvironmentVariable("KeyPortalDoContadorHash256");
+                    string semente = Environment.GetEnvironmentVariable("KeySementeHash256Futturo");
+
+                    string hashSenha = CriptografiaService.CalcularHashSHA256(keyHash256, senha + semente);
+                    senha = hashSenha;
+
                     string insertQuery = " Select Id, TipoConta FROM [Controle].[Usuarios] " +
                                          " WHERE VoExcluido=0 AND Login = @Login AND Senha = @Senha";
 

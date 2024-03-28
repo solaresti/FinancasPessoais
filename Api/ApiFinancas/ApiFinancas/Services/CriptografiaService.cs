@@ -103,5 +103,24 @@ namespace ApiFinancas.Services
             return Convert.ToBase64String(array);
         }
 
+        /// <summary>
+        /// Método para criação do Hash da transação
+        /// </summary>
+        /// <param name="secretKey"></param>
+        /// <param name="plaintext"></param>
+        /// <returns></returns>
+        internal static string CalcularHashSHA256(string secretKey, string plaintext)
+        {
+            byte[] apiSecreteKeyBytes = Encoding.ASCII.GetBytes(secretKey);
+            byte[] rawBodyBytes = Encoding.ASCII.GetBytes(plaintext);
+            var hash = "";
+            using (HMACSHA256 hmac = new HMACSHA256(apiSecreteKeyBytes))
+            {
+                byte[] rawBodyHashBytes = hmac.ComputeHash(rawBodyBytes);
+                hash = BitConverter.ToString(rawBodyHashBytes).Replace("-", string.Empty).ToLower();
+            }
+            return hash;
+        }
+
     }
 }

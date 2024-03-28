@@ -2,6 +2,8 @@
 
 @inject NavigationManager Navigation 
 @rendermode InteractiveServer 
+@inject ProtectedSessionStorage sessionStorage
+
 
 <PageTitle>Movimentação</PageTitle>
 
@@ -18,6 +20,11 @@
 }
 
 @code {
+    /// <summary>
+    /// Dados da seção do usuário
+    /// </summary>
+    SessionModel sessionModel = new SessionModel();
+
     public string mensagem { get; set; }
 
     [Parameter]
@@ -31,25 +38,26 @@
     public async Task ConfirmarExclusao()
     {
         mensagem = "";
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        // ---------------------------------------------------------------------------------------
+        // Verificando se o login já foi efetuado
+        var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        if (conteudoSessionStorage.Value == null)
         {
-            mensagem = retornoService.Mensagem;
-            return;
+            sessionModel = new SessionModel();
         }
         else
         {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
+            sessionModel = conteudoSessionStorage.Value;
         }
 
+        if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        {
+            Navigation.NavigateTo("/", true);
+        }
+        // ---------------------------------------------------------------------------------------
 
-        retornoService = await MovimentacaoInvestimentoService.ExcluirMovimentacao(token, Id);
+
+        var retornoService = await MovimentacaoInvestimentoService.ExcluirMovimentacao(sessionModel.Token, Id);
 
         if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

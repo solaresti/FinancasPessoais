@@ -2,6 +2,7 @@
 @using ApiFinancas.Models
 @using AppFinancas.Models
 @inject NavigationManager Navigation
+@inject ProtectedSessionStorage sessionStorage
 
 @rendermode InteractiveServer
 
@@ -70,9 +71,14 @@
 
 @code {
     /// <summary>
+    /// Dados da seção do usuário
+    /// </summary>
+    SessionModel sessionModel = new SessionModel();
+
+    /// <summary>
     /// Movimentação que está sendo incluída
     /// </summary>
-    public MovimentacaoInvestimentoModel lancamentoModel { get; set; }
+    public MovimentacaoInvestimentoModel lancamentoModel { get; set; } = new();
 
     /// <summary>
     /// Lista de investimentos disponíveis
@@ -99,23 +105,26 @@
     {
 
         mensagem = "";
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        // ---------------------------------------------------------------------------------------
+        // Verificando se o login já foi efetuado
+        var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        if (conteudoSessionStorage.Value == null)
         {
-            mensagem = retornoService.Mensagem;
+            sessionModel = new SessionModel();
         }
         else
         {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
+            sessionModel = conteudoSessionStorage.Value;
         }
 
+        if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        {
+            Navigation.NavigateTo("/", true);
+        }
+        // ---------------------------------------------------------------------------------------
+
          // Obtendo a lista de metas
-        RetornoListaEntidadesModel<MetaModel> retornoApiMetas = await MetaService.ObterLista(token);
+        RetornoListaEntidadesModel<MetaModel> retornoApiMetas = await MetaService.ObterLista(sessionModel.Token);
 
         if (retornoApiMetas.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
@@ -128,7 +137,7 @@
         }
 
         // Obtendo a lista de investimentos
-        RetornoListaEntidadesModel<InvestimentoModel> retornoApiInvestimentos = await InvestimentoService.ObterLista(token);
+        RetornoListaEntidadesModel<InvestimentoModel> retornoApiInvestimentos = await InvestimentoService.ObterLista(sessionModel.Token);
         if (retornoApiInvestimentos.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
             ListaInvestimentos = retornoApiInvestimentos.ListaEntidades;
@@ -140,7 +149,7 @@
         }
 
         // Obtem o lançamento
-        RetornoEntidadeModel<MovimentacaoInvestimentoModel> retornoApi = await MovimentacaoInvestimentoService.ObterLancamento(token, Id);
+        RetornoEntidadeModel<MovimentacaoInvestimentoModel> retornoApi = await MovimentacaoInvestimentoService.ObterLancamento(sessionModel.Token, Id);
 
         if (retornoApi.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
@@ -156,22 +165,8 @@
     {
 
         mensagem = "";
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
-        {
-            mensagem = retornoService.Mensagem;
-        }
-        else
-        {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
-        }
-
-        RetornoEntidadeModel<MovimentacaoInvestimentoModel> retornoInclusao = await MovimentacaoInvestimentoService.IncluirOuAlterarLancamento(token, lancamentoModel, flagInclusao: false);
+       
+        RetornoEntidadeModel<MovimentacaoInvestimentoModel> retornoInclusao = await MovimentacaoInvestimentoService.IncluirOuAlterarLancamento(sessionModel.Token, lancamentoModel, flagInclusao: false);
 
         if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

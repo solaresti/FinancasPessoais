@@ -1,10 +1,17 @@
 ﻿@page "/investimento"
 @using AppFinancas.Models
 @rendermode InteractiveServer
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navigationManager
 
 <PageTitle>Investimentos</PageTitle>
 
 <h2>Meus investimentos</h2>
+
+@if (mensagem != string.Empty)
+{
+    <label class="text text-info">@mensagem</label>
+}
 
 <table class="table">
 
@@ -61,6 +68,11 @@
             background-color: lightgray;
         }
 
+        tr.table_total {
+            background-color: lightgray;
+            font-weight: bold;
+        }
+
         .money {
             text-align: right;
             font-weight: bold;
@@ -79,7 +91,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var investimento in ListaInvestimentos )
+        @foreach (var investimento in ListaInvestimentos)
         {
             <tr>
                 <td>@investimento.Nome</td>
@@ -98,6 +110,16 @@
             </tr>
         }
     </tbody>
+    <tfoot>
+        <tr class="table_total">
+            <th scope="row">Total</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="table-money">@ValorTotal.ToString("C")</td>
+            <td></td>
+        </tr>
+    </tfoot>
 
 </table>
 
@@ -106,54 +128,57 @@
 
 <br />
 
-@if (mensagem != string.Empty)
-{
-    <label class="text text-info">@mensagem</label>
-}
+
 @* <p role="status">Current count: @currentCount</p>
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
 
 @code {
     string mensagem = "Carregando lista de investimentos...";
+
+    /// Lista dos investimentos
     public List<InvestimentoModel> ListaInvestimentos { get; set; } = new();
 
-    
+    /// Valor total dpos investimentos
+    public float ValorTotal { get; set; } = 0;
 
+    /// <summary>
+    /// Dados da seção do usuário
+    /// </summary>
+    SessionModel sessionModel = new SessionModel();
+
+
+    /// Carga inicial
 
     protected override async Task OnInitializedAsync()
     {
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-
-      
-
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        // ---------------------------------------------------------------------------------------
+        // Verificando se o login já foi efetuado
+        var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        if (conteudoSessionStorage.Value == null)
         {
-            mensagem = retornoService.Mensagem;
-            return;
+            sessionModel = new SessionModel();
         }
         else
         {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
+            sessionModel = conteudoSessionStorage.Value;
         }
 
-        RetornoListaEntidadesModel<InvestimentoModel> retornoApi = await InvestimentoService.ObterLista(token);
+        if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        {
+            navigationManager.NavigateTo("/", true);
+        }
+        // ---------------------------------------------------------------------------------------
+
+        RetornoListaEntidadesModel<InvestimentoModel> retornoApi = await InvestimentoService.ObterLista(sessionModel.Token);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
             ListaInvestimentos = retornoApi.ListaEntidades;
+            ValorTotal = ListaInvestimentos.Sum(investimento => investimento.Valor.Value);
+            mensagem = "";
         }
 
     }
 
-    private void Teste()
-    {
-
-        // adsfjsdklfjksdl
-    }
 }

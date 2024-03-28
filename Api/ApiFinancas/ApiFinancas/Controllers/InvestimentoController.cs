@@ -50,11 +50,7 @@ namespace ApiFinancas.Controllers
                     return StatusCode(403, retornoModel);
                 }
 
-                if (tipoUsuario != TipoContaEnum.UsuarioAdministrador)
-                {
-                    investimento.IdUsuario = idUsuario;
-                }
-                
+                investimento.IdUsuario = idUsuario;
 
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
@@ -220,14 +216,14 @@ namespace ApiFinancas.Controllers
                 using (var contexto = new SqlConnection(conexaoBanco))
                 {
                     string selectQuery = " SELECT " +
-                                         "     Investimentos.Id, Investimentos.Nome, ROUND(SUM(ISNULL(MovimentacoesInvestimentos.Valor,0)),2) AS Valor" +
+                                         "     Investimentos.Id, Investimentos.Nome, Investimentos.Categoria, Investimentos.Risco, ROUND(SUM(ISNULL(MovimentacoesInvestimentos.Valor,0)),2) AS Valor" +
                                          " FROM " +
                                          "    [Main].[Investimentos] WITH (NOLOCK)" +
                                          "    LEFT JOIN [Main].[MovimentacoesInvestimentos] WITH (NOLOCK) ON (Investimentos.Id = MovimentacoesInvestimentos.IdInvestimento AND MovimentacoesInvestimentos.VoExcluido = 0)" +
                                          " WHERE " +
                                          "    Investimentos.VoExcluido=0 AND Investimentos.IdUsuario = @IdUsuario " +
                                          " GROUP BY" +
-                                         "    Investimentos.Id, Investimentos.Nome" +
+                                         "    Investimentos.Id, Investimentos.Nome, Investimentos.Categoria, Investimentos.Risco" +
                                          " ORDER BY " +
                                          "    Nome";
 

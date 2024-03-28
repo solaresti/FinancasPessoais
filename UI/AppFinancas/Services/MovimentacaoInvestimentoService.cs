@@ -25,7 +25,7 @@ namespace AppFinancas.Services
                 
                 string mensagemErro = "";
                 // Consumir o serviço
-                string urlBaseServico = "https://localhost:7076";
+                string urlBaseServico = System.Environment.GetEnvironmentVariable("UrlApiFutturo");
                 var client = new RestClient(urlBaseServico);
 
                 RestRequest request;
@@ -84,7 +84,7 @@ namespace AppFinancas.Services
 
                 string mensagemErro = "";
                 // Consumir o serviço
-                string urlBaseServico = "https://localhost:7076";
+                string urlBaseServico = System.Environment.GetEnvironmentVariable("UrlApiFutturo");
                 var client = new RestClient(urlBaseServico);
 
 
@@ -141,7 +141,7 @@ namespace AppFinancas.Services
 
                 string mensagemErro = "";
                 // Consumir o serviço
-                string urlBaseServico = "https://localhost:7076";
+                string urlBaseServico = System.Environment.GetEnvironmentVariable("UrlApiFutturo");
                 var client = new RestClient(urlBaseServico);
 
 
@@ -189,7 +189,7 @@ namespace AppFinancas.Services
 
                 string mensagemErro = "";
                 // Consumir o serviço
-                string urlBaseServico = "https://localhost:7076";
+                string urlBaseServico = System.Environment.GetEnvironmentVariable("UrlApiFutturo");
                 var client = new RestClient(urlBaseServico);
 
 
@@ -239,7 +239,7 @@ namespace AppFinancas.Services
 
                 string mensagemErro = "";
                 // Consumir o serviço
-                string urlBaseServico = "https://localhost:7076";
+                string urlBaseServico = System.Environment.GetEnvironmentVariable("UrlApiFutturo");
                 var client = new RestClient(urlBaseServico);
 
 
@@ -298,7 +298,7 @@ namespace AppFinancas.Services
 
                 string mensagemErro = "";
                 // Consumir o serviço
-                string urlBaseServico = "https://localhost:7076";
+                string urlBaseServico = System.Environment.GetEnvironmentVariable("UrlApiFutturo");
                 var client = new RestClient(urlBaseServico);
 
 

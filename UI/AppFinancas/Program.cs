@@ -28,4 +28,7 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
+System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("pt-BR");
+System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("pt-BR");
+
 app.Run();

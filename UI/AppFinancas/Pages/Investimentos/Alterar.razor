@@ -1,6 +1,7 @@
 ﻿@page "/investimento/alterar/{id:int}"
 @inject NavigationManager Navigation
-
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
 <PageTitle>Investimento</PageTitle>
@@ -89,6 +90,10 @@
     /// </summary>
     public Dictionary<string, string> ListaRisco { get; set; } = new Dictionary<string, string>();
 
+    /// <summary>
+    /// Dados da seção do usuário
+    /// </summary>
+    SessionModel sessionModel = new SessionModel();
 
     /// <summary>
     /// Método que é disparado todas vez que atela é carregada
@@ -107,22 +112,26 @@
         ListaRisco.Add("Alto", "3");
 
         mensagem = "";
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+
+        // ---------------------------------------------------------------------------------------
+        // Verificando se o login já foi efetuado
+        var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        if (conteudoSessionStorage.Value == null)
         {
-            mensagem = retornoService.Mensagem;
+            sessionModel = new SessionModel();
         }
         else
         {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
+            sessionModel = conteudoSessionStorage.Value;
         }
 
-        RetornoEntidadeModel<InvestimentoModel> retornoApi = await InvestimentoService.ObterInvestimento(token, Id);
+        if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        {
+            navigationManager.NavigateTo("/", true);
+        }
+        // ---------------------------------------------------------------------------------------
+
+        RetornoEntidadeModel<InvestimentoModel> retornoApi = await InvestimentoService.ObterInvestimento(sessionModel.Token, Id);
 
         if (retornoApi.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {
@@ -137,22 +146,7 @@
     {
 
         mensagem = "";
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
-        {
-            mensagem = retornoService.Mensagem;
-        }
-        else
-        {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
-        }
-
-        RetornoEntidadeModel<InvestimentoModel> retornoInclusao = await InvestimentoService.IncluirOuAlterarInvestimento(token, investimentoModel, flagInclusao:false);
+        RetornoEntidadeModel<InvestimentoModel> retornoInclusao = await InvestimentoService.IncluirOuAlterarInvestimento(sessionModel.Token, investimentoModel, flagInclusao: false);
 
         if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

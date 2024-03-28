@@ -2,6 +2,7 @@
 @using ApiFinancas.Models
 @using AppFinancas.Models
 @inject NavigationManager Navigation
+@inject ProtectedSessionStorage sessionStorage
 
 @rendermode InteractiveServer
 
@@ -50,6 +51,11 @@
 
 
 @code {
+     /// <summary>
+    /// Dados da seção do usuário
+    /// </summary>
+    SessionModel sessionModel = new SessionModel();
+
     public MetaModel metaModel { get; set; } = new() { Data = DateTime.Today.AddYears(1) };
     public string mensagem { get; set; }
 
@@ -58,22 +64,25 @@
     {
 
         mensagem = "";
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        // ---------------------------------------------------------------------------------------
+        // Verificando se o login já foi efetuado
+        var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        if (conteudoSessionStorage.Value == null)
         {
-            mensagem = retornoService.Mensagem;
+            sessionModel = new SessionModel();
         }
         else
         {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
+            sessionModel = conteudoSessionStorage.Value;
         }
 
-        RetornoEntidadeModel<MetaModel> retornoInclusao = await MetaService.IncluirOuAlterarMeta(token, metaModel, flagInclusao: true);
+        if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        {
+            Navigation.NavigateTo("/", true);
+        }
+        // ---------------------------------------------------------------------------------------
+
+        RetornoEntidadeModel<MetaModel> retornoInclusao = await MetaService.IncluirOuAlterarMeta(sessionModel.Token, metaModel, flagInclusao: true);
 
         if (retornoInclusao.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

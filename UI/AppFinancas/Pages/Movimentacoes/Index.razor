@@ -1,7 +1,8 @@
 ﻿@page "/MovimentacaoInvestimento"
 @using AppFinancas.Models
 @rendermode InteractiveServer
-
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navigationManager
 <PageTitle>Lançamentos</PageTitle>
 
 <h2>Seus lançamentos</h2>
@@ -45,18 +46,18 @@
             letter-spacing: 0.1em;
         }
 
-        tr.head th:first-child {
-            -webkit-border-top-left-radius: 5px;
-            -moz-border-radius-topleft: 5px;
-            border-top-left-radius: 5px;
-        }
+            tr.head th:first-child {
+                -webkit-border-top-left-radius: 5px;
+                -moz-border-radius-topleft: 5px;
+                border-top-left-radius: 5px;
+            }
 
-        tr.head th:last-child {
-            -webkit-border-top-right-radius: 5px;
-            -moz-border-radius-topright: 5px;
-            border-top-right-radius: 5px;
-        }
-        
+            tr.head th:last-child {
+                -webkit-border-top-right-radius: 5px;
+                -moz-border-radius-topright: 5px;
+                border-top-right-radius: 5px;
+            }
+
         tr.even {
             background-color: #efefef;
         }
@@ -69,13 +70,12 @@
             text-align: right;
             font-weight: bold;
         }
-        
     </style>
 
 
     <thead>
         <tr class="head">
-            
+
             <th>Data</th>
             <th>Investimento</th>
             <th>Meta</th>
@@ -89,7 +89,7 @@
         @foreach (var lancamento in ListaLancamentos)
         {
             <tr>
-            
+
                 <td>@lancamento.Data.ToString("dd/MM/yyyy")</td>
                 <td>@lancamento.NomeInvestimento</td>
                 <td>@lancamento.NomeMeta</td>
@@ -122,29 +122,35 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
 
 @code {
+    /// <summary>
+    /// Dados da seção do usuário
+    /// </summary>
+    SessionModel sessionModel = new SessionModel();
+
     string mensagem = "Carregando lista de metas...";
     public List<MovimentacaoInvestimentoModel> ListaLancamentos { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        // ---------------------------------------------------------------------------------------
+        // Verificando se o login já foi efetuado
+        var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        if (conteudoSessionStorage.Value == null)
         {
-            mensagem = retornoService.Mensagem;
-            return;
+            sessionModel = new SessionModel();
         }
         else
         {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
+            sessionModel = conteudoSessionStorage.Value;
         }
 
-        RetornoListaEntidadesModel<MovimentacaoInvestimentoModel> retornoApi = await MovimentacaoInvestimentoService.ObterListaLancamentos(token);
+        if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        {
+            navigationManager.NavigateTo("/", true);
+        }
+        // ---------------------------------------------------------------------------------------
+
+        RetornoListaEntidadesModel<MovimentacaoInvestimentoModel> retornoApi = await MovimentacaoInvestimentoService.ObterListaLancamentos(sessionModel.Token);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

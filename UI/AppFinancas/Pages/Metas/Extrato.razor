@@ -1,6 +1,8 @@
 ﻿@page "/meta/extrato/{id:int}/{nomeMeta}"
 @using AppFinancas.Models
 @rendermode InteractiveServer
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navigationManager
 
 <PageTitle>Metas</PageTitle>
 
@@ -123,6 +125,10 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button> *@
 
 @code {
+     /// <summary>
+    /// Dados da seção do usuário
+    /// </summary>
+    SessionModel sessionModel = new SessionModel();
 
     [Parameter]
     public int Id { get; set; }
@@ -136,24 +142,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = "rsinfo", Senha = "senha123" };
-        var x = UsuarioService.ObterToken(model);
-        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
-        string token = "";
-
-        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        // ---------------------------------------------------------------------------------------
+        // Verificando se o login já foi efetuado
+        var conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        if (conteudoSessionStorage.Value == null)
         {
-            mensagem = retornoService.Mensagem;
-            return;
+            sessionModel = new SessionModel();
         }
         else
         {
-            ///Limpando a mensagem
-            token = retornoService.Mensagem;
-            mensagem = "";
+            sessionModel = conteudoSessionStorage.Value;
         }
 
-        RetornoListaEntidadesModel<ExtratoModel> retornoApi = await MovimentacaoInvestimentoService.ObterExtrato(token, Id, flagMeta:true);
+        if (string.IsNullOrWhiteSpace(sessionModel.Token))
+        {
+            navigationManager.NavigateTo("/", true);
+        }
+        // ---------------------------------------------------------------------------------------
+
+        RetornoListaEntidadesModel<ExtratoModel> retornoApi = await MovimentacaoInvestimentoService.ObterExtrato(sessionModel.Token, Id, flagMeta:true);
 
         if (retornoApi.Codigo == ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
         {

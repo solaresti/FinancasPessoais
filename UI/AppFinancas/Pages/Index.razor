@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject ProtectedSessionStorage sessionStorage
 
 <PageTitle>Futturo</PageTitle>
 
@@ -6,4 +7,111 @@
 
 Aplicativo de controle de finanças pessoais.
 
+@if (Mensagem != string.Empty)
+{
+    <br/>
+    <label class="text text-info">@Mensagem</label>
+}
+
+@if (string.IsNullOrWhiteSpace(sessionModel.Token))
+{
+    <br/>
+    <br />
+
+    <EditForm Model="@loginModel" OnValidSubmit="FazerLogin">
+        <DataAnnotationsValidator />
+        @* <ValidationSummary/> *@
+
+        <div class="mb-3">
+            <label class="form-label">Usuário</label> 
+            <InputText placeholder="Usuário" @bind-Value="loginModel.Login" class="form-control"></InputText>
+            <ValidationMessage For="@(() => loginModel.Login)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Senha</label>
+            <InputText type="password" placeholder="Senha"  @bind-Value="loginModel.Senha" class="form-control"></InputText>
+            <ValidationMessage For="@(() => loginModel.Senha)" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <a href="/" class="btn btn-default">Esqueci minha senha</a>
+    </EditForm>
+}
+
+
 @* <SurveyPrompt Title="How is Blazor working for you?" /> *@
+
+@code
+{
+    /// <summary>
+    /// Objeto requisição de login
+    /// </summary>
+    public RequisicaoLoginModel loginModel { get; set; } = new();
+
+    /// <summary>
+    /// Mensagem a ser exibida para o usuário
+    /// </summary>
+    public string Mensagem { get; set; } = "";
+
+
+    /// <summary>
+    /// Objeto de seção
+    /// </summary>
+    public SessionModel sessionModel { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        string token = "";
+
+        ProtectedBrowserStorageResult<SessionModel> conteudoSessionStorage;
+        try
+        {
+            conteudoSessionStorage = await sessionStorage.GetAsync<SessionModel>("sessionModel");
+        }
+        catch (Exception ex)
+        {
+
+            throw;
+        }
+
+
+        if (conteudoSessionStorage.Value == null)
+        {
+            sessionModel = new SessionModel();
+        }
+        else
+        {
+            sessionModel = conteudoSessionStorage.Value;
+        }
+    }
+
+    protected async Task FazerLogin()
+    {
+        RequisicaoLoginModel model = new RequisicaoLoginModel() { Login = loginModel.Login, Senha = loginModel.Senha };
+        var x = UsuarioService.ObterToken(model);
+        RetornoBaseModel retornoService = await UsuarioService.ObterToken(model);
+
+        if (retornoService.Codigo != ApiFinancas.Enums.CodigosRetornoEnum.Sucesso)
+        {
+            Mensagem = retornoService.Mensagem;
+            return;
+        }
+        else
+        {
+            ///Limpando a mensagem
+            sessionModel.Token = retornoService.Mensagem;
+
+            try
+            {
+                await sessionStorage.SetAsync("sessionModel", sessionModel);
+                Mensagem = "Login efetuado com sucesso";
+            }
+            catch (Exception ex)
+            {
+
+                Mensagem = "Erro na gravação do objeto de sessão (039203C2).";
+            }
+        }
+    }
+}
